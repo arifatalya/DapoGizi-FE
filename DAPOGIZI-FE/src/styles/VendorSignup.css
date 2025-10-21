@@ -1,12 +1,13 @@
-.login-page {
+.signup-page {
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
     padding: 32px 20px;
+    background: radial-gradient(1200px 600px at 20% -10%, #ffffff 0%, #eef2f7 60%, #e9eef5 100%), #f3f4f6;
 }
 
-.login-container {
+.signup-container {
     position: relative;
     width: 100%;
     max-width: 360px;
@@ -16,7 +17,7 @@
     padding: 40px 36px 44px;
 }
 
-.button-close {
+.button-back {
     position: absolute;
     top: 20px;
     left: 14px;
@@ -32,47 +33,41 @@
     line-height: 1;
 }
 
-.login-header {
+.signup-header {
     margin: 60px 0 20px 0;
     text-align: start;
 }
 
-.welcome-back {
+.signup-title {
     font-size: 26px;
     font-weight: 500;
     color: #334155;
 }
 
-.vendor-greet {
+.signup-subtitle {
     font-size: 28px;
     font-weight: 700;
     color: #1f2937;
 }
 
-.login-subtitle {
-    font-size: 15px;
-    color: #6b7280;
-    margin-top: 8px;
-}
-
-.login-form {
+.signup-form {
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
 
-.email-section {
+.signup-field {
     display: flex;
     flex-direction: column;
 }
 
-.email-label, .password-label {
+.signup-label {
     font-size: 13px;
     color: #6b7280;
     margin: 10px 0 10px 0;
 }
 
-.email-section input, .password-section input {
+.signup-field input {
     width: 100%;
     border: 1px solid #d7dee7;
     border-radius: 10px;
@@ -84,37 +79,23 @@
     box-sizing: border-box;
 }
 
-.email-section input:hover, .password-section input:hover {
+.signup-field input:hover {
     background-color: #eaeef1;
 }
 
-.email-section input:focus, .password-section input:focus {
+.signup-field input:focus {
     outline: #6b7280 1px solid;
     border-color: #7e868f;
     box-shadow: 0 0 0 3px rgba(156, 163, 175, 0.25);
 }
 
-.password-wrapper:hover {
-    border-color: #c8d2df;
-}
-
-.password-wrapper {
+.signup-password-wrapper {
     display: flex;
     align-items: center;
     position: relative;
 }
 
-.password-input {
-    flex: 1;
-    border: none;
-    background: transparent;
-    outline: none;
-    color: #111827;
-    font-size: 14px;
-    padding: 0;
-}
-
-.button-eye {
+.signup-eye-btn {
     position: absolute;
     right: 10px;
     top: 50%;
@@ -126,26 +107,15 @@
     place-items: center;
 }
 
-.button-eye:hover {
+.signup-eye-btn:hover {
     opacity: 0.8;
 }
 
-.form-error {
-    text-align: center;
-    color: #b91c1c;
-    font-weight: 500;
-    font-size: 10px;
-    background: #fee2e2;
-    border: 1px solid #fecaca;
-    border-radius: 10px;
-    padding: 8px 10px;
-}
-
-.submit-button {
+.signup-button-wrap {
     margin: 0;
 }
 
-.button-submit {
+.signup-btn {
     width: 100%;
     padding: 12px 16px;
     margin: 20px 0 5px 0;
@@ -158,21 +128,43 @@
     transition: background-color .15s ease, transform .02s ease, opacity .15s ease;
 }
 
-.button-submit:hover {
+.signup-btn:hover {
     background: #5c6a7e;
 }
 
-.button-submit:active {
+.signup-btn:active {
     background: #516072;
     transform: translateY(.5px);
 }
 
-.button-submit:disabled {
-    opacity: 60%;
+.signup-btn:disabled {
+    opacity: .6;
     cursor: not-allowed;
 }
 
-.form-links {
+.signup-error {
+    text-align: center;
+    color: #b91c1c;
+    font-weight: 500;
+    font-size: 10px;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    padding: 8px 10px;
+}
+
+.signup-success {
+    text-align: center;
+    color: #15803d;
+    font-weight: 500;
+    font-size: 10px;
+    background: #dcfce7;
+    border: 1px solid #bbf7d0;
+    border-radius: 10px;
+    padding: 8px 10px;
+}
+
+.signup-links {
     margin: 10px 0 20px 0;
     display: flex;
     justify-content: start;
@@ -181,25 +173,25 @@
     font-size: 12px;
 }
 
-.link {
+.signup-link {
     color: #475569;
     text-decoration: underline;
     text-underline-offset: 2px;
 }
 
-.link:hover {
+.signup-link:hover {
     color: #334155;
 }
 
 @media (max-width: 480px) {
-    .login-container {
+    .signup-container {
         max-width: 360px;
         padding: 28px 24px 32px;
     }
 }
 
 @media (max-width: 380px) {
-    .login-container {
+    .signup-container {
         max-width: 100%;
     }
 }

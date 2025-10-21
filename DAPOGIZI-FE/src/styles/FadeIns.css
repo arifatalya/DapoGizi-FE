@@ -1,0 +1,26 @@
+.fade-in-horizontal {
+    opacity: 0;
+    transform: translateX(10px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    will-change: opacity, transform;
+}
+
+.fade-in-vertical {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    will-change: opacity, transform;
+}
+
+.fade-in-horizontal.is-visible, .fade-in-vertical.is-visible  {
+    opacity: 1;
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fade-in-horizontal, .fade-in-vertical {
+        transition: none;
+        transform: none;
+        opacity: 1;
+    }
+}
