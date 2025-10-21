@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import {useState} from 'react'
 import axios from 'axios'
-import { Link, useNavigate } from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import '../styles/VendorSignup.css'
 import EyeOpen from '../assets/eye-open.svg'
 import EyeClose from '../assets/eye-close.svg'

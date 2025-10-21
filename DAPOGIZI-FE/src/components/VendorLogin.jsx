@@ -23,7 +23,9 @@ const VendorLogin = () => {
                 withCredentials: true,
             }).then((res) => {
                 const name = res?.data?.vendor?.vendor_name
-                if (name) setVendorName(name)
+                if (name) {
+                    setVendorName(name)
+                }
             })
             .catch(() => localStorage.removeItem('token'))
     }, [])
@@ -107,7 +109,7 @@ const VendorLogin = () => {
                     </div>
                     {err && <p className="form-error">{err}</p>}
                     <div className="form-links">
-                        <span>Already have an account?</span>
+                        <span>Don't have an account?</span>
                         <Link to="/signup" className="link"><b>Create Account</b></Link>
                     </div>
                 </form>
