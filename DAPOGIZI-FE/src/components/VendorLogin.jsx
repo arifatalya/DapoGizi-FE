@@ -5,6 +5,7 @@ import '../styles/VendorLogin.css'
 import EyeOpen from '../assets/eye-open.svg'
 import EyeClose from '../assets/eye-close.svg'
 import X from '../assets/x.svg'
+import Warning from '../assets/warning-triangle.svg'
 
 const VendorLogin = () => {
     const navigate = useNavigate()
@@ -53,12 +54,16 @@ const VendorLogin = () => {
                 navigate('/home');
 
             } else setErr(data?.message || 'Login failed.')
-        } catch (error) {
-            const msg =
-                error?.response?.data?.message ||
-                error?.message ||
-                'Login failed. Please check your credentials.'
-            setErr(msg)
+        } catch (err) {
+            let msg = "Your email and password don't match. Please try again.";
+            if (err.code === "ERR_NETWORK" || err.message.includes("Network Error")) {
+                msg = "Server is down.";
+            } else {
+                msg = err.message;
+            }
+            setErr(msg);
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -82,7 +87,6 @@ const VendorLogin = () => {
                             placeholder="Enter your email"
                             value={form.email}
                             onChange={onChange}
-                            required
                         />
                     </div>
                     <div className="password-section">
@@ -95,10 +99,9 @@ const VendorLogin = () => {
                                 placeholder="Enter your password"
                                 value={form.password}
                                 onChange={onChange}
-                                required
                             />
                             <button className="button-eye" type="button" aria-label={showPw ? 'Hide password' : 'Show password'} onClick={() => setShowPw((s) => !s)}>
-                                <img src={showPw ? EyeOpen : EyeClose} alt={showPw ? 'Hide' : 'Show'} width="22" height="22"/>
+                                <img src={showPw ? EyeOpen : EyeClose} alt={showPw ? 'Hide' : 'Show'} width="18" height="18"/>
                             </button>
                         </div>
                     </div>
@@ -107,7 +110,12 @@ const VendorLogin = () => {
                             {loading ? 'Logging in...' : 'Log In'}
                         </button>
                     </div>
-                    {err && <p className="form-error">{err}</p>}
+                    {err && (
+                        <div className="form-error">
+                            <img src={Warning} alt="Warning"/>
+                            <p>{err}</p>
+                        </div>
+                    )}
                     <div className="form-links">
                         <span>Don't have an account?</span>
                         <Link to="/signup" className="link"><b>Create Account</b></Link>

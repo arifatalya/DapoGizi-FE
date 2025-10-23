@@ -40,12 +40,19 @@ const VendorSignup = () => {
             } else {
                 setErr(data?.message || 'Signup failed.')
             }
-        } catch (error) {
-            const msg =
-                error?.response?.data?.message ||
-                error?.message ||
-                'Signup failed. Please check your inputs.'
-            setErr(msg)
+        } catch (err) {
+            console.log(err);
+            let msg = "Please fill in all fields.";
+            if (err.code === "ERR_NETWORK" || err.message.includes("Network Error")) {
+                msg = "Server is down.";
+            } if (err.code === "ERR_BAD_REQUEST" || err.message.includes("Request failed with status code 400")) {
+                msg = "400: Please fill in all the required fields.";
+            } else {
+                msg = err.message;
+            }
+            setErr(msg);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -69,7 +76,6 @@ const VendorSignup = () => {
                             placeholder="Enter your name"
                             value={form.vendor_name}
                             onChange={onChange}
-                            required
                         />
                     </div>
                     <div className="signup-field email-field">
@@ -81,7 +87,6 @@ const VendorSignup = () => {
                             placeholder="Enter your email"
                             value={form.email}
                             onChange={onChange}
-                            required
                         />
                     </div>
                     <div className="signup-field password-field">
@@ -95,16 +100,9 @@ const VendorSignup = () => {
                                 value={form.password}
                                 onChange={onChange}
                                 autoComplete="new-password"
-                                required
                             />
-                            <button type="button" className="signup-eye-btn" aria-label={showPw ? 'Hide password' : 'Show password'}
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    e.stopPropagation()
-                                    setShowPw((prev) => !prev)
-                                }}
-                            >
-                                <img src={showPw ? EyeOpen : EyeClose} alt={showPw ? 'Hide' : 'Show'} width="22" height="22"/>
+                            <button type="button" className="signup-eye-btn" aria-label={showPw ? 'Hide password' : 'Show password'} onClick={() => setShowPw((s) => !s)}>
+                                <img src={showPw ? EyeOpen : EyeClose} alt={showPw ? 'Hide' : 'Show'} width="18" height="18"/>
                             </button>
                         </div>
                     </div>

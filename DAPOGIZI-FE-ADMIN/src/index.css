@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-html, body, input, button, p, span, #root {
+html, body, input, button, span, #root {
   height: 100%;
   margin: 0;
   font-family: 'Plus Jakarta Sans', sans-serif;

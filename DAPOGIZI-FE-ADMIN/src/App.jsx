@@ -1,12 +1,12 @@
 import './App.css'
 import {Routes, Route} from 'react-router-dom'
-import AdminLogin from './components/AdminLogin.jsx'
+import AdminLoginPage from './pages/AdminLoginPage.jsx'
 
 function App() {
 
     return (
         <Routes>
-            <Route path="/" element={<AdminLogin />} />
+            <Route path="/" element={<AdminLoginPage />} />
         </Routes>
     )
 }
