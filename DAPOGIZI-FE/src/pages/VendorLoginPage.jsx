@@ -1,5 +1,5 @@
 import VendorLogin from '../components/VendorLogin.jsx'
-import {FadeInVertical} from "../components/FadeIns.jsx";
+import {FadeInVertical} from '../components/FadeIns.jsx'
 
 const VendorLoginPage = () => {
     return(
