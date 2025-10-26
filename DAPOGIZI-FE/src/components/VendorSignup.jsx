@@ -102,7 +102,7 @@ const VendorSignup = () => {
                                 autoComplete="new-password"
                             />
                             <button type="button" className="signup-eye-btn" aria-label={showPw ? 'Hide password' : 'Show password'} onClick={() => setShowPw((s) => !s)}>
-                                <img src={showPw ? EyeOpen : EyeClose} alt={showPw ? 'Hide' : 'Show'} width="18" height="18"/>
+                                <img src={showPw ? EyeOpen : EyeClose} alt={showPw ? 'Hide' : 'Show'} />
                             </button>
                         </div>
                     </div>

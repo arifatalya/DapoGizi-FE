@@ -1,0 +1,15 @@
+.homepage-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f8fafc;
+    position: relative;
+    overflow-x: hidden;
+}
+
+.homepage-qa-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    padding: 32px;
+}

@@ -9,27 +9,29 @@ import Warning from '../assets/warning-triangle.svg'
 
 const VendorLogin = () => {
     const navigate = useNavigate()
+    const url = `${import.meta.env.VITE_API_URL}`
     const [form, setForm] = useState({ email: '', password: '' })
     const [showPw, setShowPw] = useState(false)
     const [loading, setLoading] = useState(false)
     const [err, setErr] = useState('')
     const [vendorName, setVendorName] = useState('')
+    const [tokenExists, setTokenExists] = useState(false)
 
     useEffect(() => {
         const token = localStorage.getItem('token')
         if (!token) return
-        axios.get(
-            `${import.meta.env.VITE_API_URL}/auth/vendor/me`, {
+        axios.get(`${url}/auth/me`, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true,
             }).then((res) => {
                 const name = res?.data?.vendor?.vendor_name
-                if (name) {
+                if (name && token) {
                     setVendorName(name)
+                    setTokenExists(true)
                 }
             })
             .catch(() => localStorage.removeItem('token'))
-    }, [])
+    }, [url])
 
     const onChange = (e) => {
         setForm((s) => ({ ...s, [e.target.name]: e.target.value }))
@@ -40,13 +42,13 @@ const VendorLogin = () => {
         setErr('')
         setLoading(true)
         try {
-            const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
+            const { data } = await axios.post(`${url}/auth/login`, {
                 email: form.email.trim(), password: form.password
                 }, {withCredentials: true }
             )
             if (data?.token) {
                 localStorage.setItem('token', data.token)
-                const profile = await axios.get(`${import.meta.env.VITE_API_URL}/auth/vendor/me`, {
+                const profile = await axios.get(`${url}/auth/me`, {
                     headers: { Authorization: `Bearer ${data.token}` },
                     withCredentials: true,
                 });
@@ -70,12 +72,24 @@ const VendorLogin = () => {
     return (
         <main className="login-page">
             <section className="login-container">
+                {/*the button here is supposed to close the login thing (then i shouldve made it as a modal i guess but ok later), and show the splash screen with two buttons, login and signup, but i havent made it yet sorry...*/}
                 <button type="button" className="button-close" aria-label="Close" onClick={() => navigate(-1)}>
                     <img src={X} alt="Close" width="26" height="26" />
                 </button>
                 <div className="login-header">
-                    <div className="welcome-back">Welcome Back,</div>
-                    <span className="vendor-greet">{vendorName || '[Vendor Name]'}</span>
+                    {tokenExists ? (
+                        <div className="header-token">
+                            <h1 className="welcome-back">Welcome Back,</h1>
+                            <p className="vendor-greet">{vendorName || 'Dear Vendor'}</p>
+                        </div>
+                    ) : (
+                        <div className="header-no-token">
+                            <h1 className="welcome-back">Log In to Your Account</h1>
+                            <p className="vendor-greet">
+                                Healthy meals start with you.
+                            </p>
+                        </div>
+                    )}
                 </div>
                 <form onSubmit={onSubmit} className="login-form">
                     <div className="email-section">
@@ -101,7 +115,7 @@ const VendorLogin = () => {
                                 onChange={onChange}
                             />
                             <button className="button-eye" type="button" aria-label={showPw ? 'Hide password' : 'Show password'} onClick={() => setShowPw((s) => !s)}>
-                                <img src={showPw ? EyeOpen : EyeClose} alt={showPw ? 'Hide' : 'Show'} width="18" height="18"/>
+                                <img src={showPw ? EyeOpen : EyeClose} alt={showPw ? 'Hide' : 'Show'} />
                             </button>
                         </div>
                     </div>

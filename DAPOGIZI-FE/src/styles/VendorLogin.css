@@ -34,20 +34,41 @@
 }
 
 .login-header {
-    margin: 60px 0 20px 0;
+    margin: 50px 0 28px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     text-align: start;
+    gap: 6px;
 }
 
-.welcome-back {
-    font-size: 26px;
-    font-weight: 500;
+.header-token .welcome-back {
+    font-size: 20px;
+    font-weight: 600;
     color: #334155;
+    margin: 0;
 }
 
-.vendor-greet {
+.header-token .vendor-greet {
     font-size: 28px;
     font-weight: 700;
-    color: #1f2937;
+    color: #0f172a;
+    margin-top: 4px;
+    letter-spacing: -0.5px;
+}
+
+.header-no-token .welcome-back {
+    font-size: 24px;
+    font-weight: 700;
+    color: #334155;
+    margin: 0;
+}
+
+.header-no-token .vendor-greet {
+    font-size: 14px;
+    color: #64748b;
+    margin-top: 10px;
+    line-height: 1.5;
 }
 
 .login-subtitle {
@@ -68,7 +89,7 @@
 }
 
 .email-label, .password-label {
-    font-size: 13px;
+    font-size: 12px;
     color: #6b7280;
     margin: 10px 0 10px 0;
 }
@@ -125,6 +146,12 @@
     cursor: pointer;
     display: grid;
     place-items: center;
+}
+
+.button-eye img {
+    width: 16px;
+    height: 16px;
+    opacity: 0.6;
 }
 
 .button-eye:hover {

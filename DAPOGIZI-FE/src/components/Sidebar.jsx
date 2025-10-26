@@ -14,35 +14,38 @@ import Logout from '../assets/logout.svg'
 import Login from '../assets/login.svg'
 
 function Sidebar() {
-    const [isActive, setIsActive] = useState(false)
-    const [loggedIn, setLoggedIn] = useState(false)
-    const [user, setUser] = useState(null)
-    const navigate = useNavigate()
+    const [isActive, setIsActive] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(false);
+    const [user, setUser] = useState(null);
+    const navigate = useNavigate();
+    const url = `${import.meta.env.VITE_API_URL}`;
 
     const handleActive = () => {
-        setIsActive(true)
+        setIsActive(true);
     }
     const handleInactive = () => {
-        setIsActive(false)
+        setIsActive(false);
     }
 
     useEffect(() => {
-        const token = localStorage.getItem('token')
+        const token = localStorage.getItem('token');
         if (token) {
-            setLoggedIn(true)
-            getVendor(token)
+            setLoggedIn(true);
+            getVendor(token);
         }
     }, [])
 
     const getVendor = async (token) => {
         try {
-            const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/auth/vendor/me`, {
+            const { data } = await axios.get(`${url}/auth/me`, {
                 headers: {Authorization: `Bearer ${token}`},
             });
             setLoggedIn(Boolean(data?.vendor))
             setUser({vendor_name: data.vendor.vendor_name ?? 'Vendor'});
         } catch (error) {
-            console.log(error.message)
+            console.log(error.message);
+            setLoggedIn(false);
+            setUser(null);
         }
     }
     const handleLogout = async () => {
@@ -56,7 +59,7 @@ function Sidebar() {
         <div>
             {!isActive && (
                 <div className="sidebar-toggle-wrapper">
-                    <button className="sidebar-toggle" onClick={handleActive}>
+                    <button className="sidebar-toggle" onClick={handleActive} aria-expanded={isActive} aria-controls="sidebar-menu">
                         <img src={ChevronRight} alt="chevron-right" height={18} width={18} />
                     </button>
                 </div>
@@ -115,7 +118,6 @@ function Sidebar() {
                     )}
                 </div>
             </aside>
-
         </div>
     );
 }

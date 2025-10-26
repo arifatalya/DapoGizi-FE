@@ -9,7 +9,7 @@ import Warning from '../assets/warning-circle.svg'
 
 const AdminLogin = () => {
     const navigate = useNavigate()
-    const url = `${import.meta.env.VITE_API_URL}/auth/login-admin`
+    const url = `${import.meta.env.VITE_API_URL}`
     const [form, setForm] = useState({email: '', password: ''})
     const [pwVisibility, setPwdVisibility] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -26,10 +26,10 @@ const AdminLogin = () => {
         setError('')
 
         try {
-            const {data} = await axios.post(url, form, {withCredentials: true})
+            const {data} = await axios.post(`${url}/auth/login`, form, {withCredentials: true})
             if (data?.token) {
                 localStorage.setItem('token', data.token)
-                navigate("/home")
+                navigate('/home')
             } else {
                 setError(data?.message || 'Admin login failed')
             }
