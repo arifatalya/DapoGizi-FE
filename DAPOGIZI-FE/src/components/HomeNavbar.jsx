@@ -9,7 +9,7 @@ function HomeNavbar({vendorName}) {
             <div className="navbar-wrapper">
                 <div className="navbar-header">
                     <div className="navbar-greeting-wrapper">
-                        <h1 className="navbar-greeting">Hello :3, {vendorName || 'Vendor'}</h1>
+                        <h1 className="navbar-greeting">Selamat Datang Kembali, {vendorName || 'Vendor'}</h1>
                     </div>
                     <div className="navbar-icons">
                         <Link className="navbar-buttons" to="/profile">

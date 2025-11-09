@@ -20,7 +20,7 @@ const VendorLogin = () => {
     useEffect(() => {
         const token = localStorage.getItem('token')
         if (!token) return
-        axios.get(`${url}/auth/me`, {
+        axios.get(`${url}/user/auth/me`, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true,
             }).then((res) => {
@@ -42,13 +42,13 @@ const VendorLogin = () => {
         setErr('')
         setLoading(true)
         try {
-            const { data } = await axios.post(`${url}/auth/login`, {
+            const { data } = await axios.post(`${url}/user/auth/login`, {
                 email: form.email.trim(), password: form.password
                 }, {withCredentials: true }
             )
             if (data?.token) {
                 localStorage.setItem('token', data.token)
-                const profile = await axios.get(`${url}/auth/me`, {
+                const profile = await axios.get(`${url}/user/auth/me`, {
                     headers: { Authorization: `Bearer ${data.token}` },
                     withCredentials: true,
                 });

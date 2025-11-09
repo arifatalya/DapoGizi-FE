@@ -12,9 +12,11 @@
 .navbar-header {
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    padding: 10px 10px;
+    justify-content: center;
     max-width: 1000px;
     margin: 0 auto;
+    gap: 18px;
 }
 
 .navbar-greeting-wrapper {
@@ -37,6 +39,7 @@
 }
 
 .navbar-icons {
+    margin-right: 30px;
     display: flex;
     align-items: center;
     gap: 10px;

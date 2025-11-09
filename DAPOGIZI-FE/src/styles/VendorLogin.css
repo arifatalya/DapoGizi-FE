@@ -126,15 +126,15 @@
     position: relative;
 }
 
-.password-input {
-    flex: 1;
-    border: none;
-    background: transparent;
-    outline: none;
-    color: #111827;
-    font-size: 14px;
-    padding: 0;
-}
+/*.password-input {*/
+/*    flex: 1;*/
+/*    border: none;*/
+/*    background: transparent;*/
+/*    outline: none;*/
+/*    color: #111827;*/
+/*    font-size: 14px;*/
+/*    padding: 0;*/
+/*}*/
 
 .button-eye {
     position: absolute;

@@ -37,7 +37,7 @@ function Sidebar() {
 
     const getVendor = async (token) => {
         try {
-            const { data } = await axios.get(`${url}/auth/me`, {
+            const { data } = await axios.get(`${url}/user/auth/me`, {
                 headers: {Authorization: `Bearer ${token}`},
             });
             setLoggedIn(Boolean(data?.vendor))

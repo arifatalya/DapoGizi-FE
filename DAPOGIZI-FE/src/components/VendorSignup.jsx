@@ -25,7 +25,7 @@ const VendorSignup = () => {
         setLoading(true)
         try {
             const { data } = await axios.post(
-                `${import.meta.env.VITE_API_URL}/auth/signup`,
+                `${import.meta.env.VITE_API_URL}/user/auth/signup`,
                 {
                     vendor_name: form.vendor_name.trim(),
                     email: form.email.trim(),
