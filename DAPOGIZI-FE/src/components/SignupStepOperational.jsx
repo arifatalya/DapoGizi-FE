@@ -41,13 +41,15 @@ const SignupStepOperational = forwardRef(({next, prev}, ref) => {
         setMessage('');
 
         try {
+            const token = localStorage.getItem("token");
             const payload = {address, operating_days: operatingDays, location: longitude && latitude ? {lon: Number(longitude), lat: Number(latitude)} : null}
+
             if (payload.location) {
                 payload.skip_geo = true;
             }
 
             const response = await axios.put(`${server}/vendor/profile`, payload,
-                {withCredentials: true}
+                {headers: {Authorization: `Bearer ${token}`}}
             );
             if (response.data?.message === 'Vendor updated') {
                 next();
@@ -66,8 +68,14 @@ const SignupStepOperational = forwardRef(({next, prev}, ref) => {
         <div className="signup-steps-global">
             <div className="signup-steps-wrapper">
                 <button className="signup-back" title="Back to previous step" onClick={prev}>
-                    <img src={ChevronLeft} alt="chevron-left" />
+                    <img src={ChevronLeft} alt="chevron-left" /> Previous
                 </button>
+                <div className="signup-step-progress">
+                    <div className="signup-step-text">Step 2 of 3</div>
+                    <div className="signup-step-bar">
+                        <div className="signup-step-bar-fill" style={{width: "66%"}}></div>
+                    </div>
+                </div>
                 <div className="signup-header">
                     <div className="signup-title">Provide your Business Details</div>
                     <span className="signup-subtitle">Operational Information</span>

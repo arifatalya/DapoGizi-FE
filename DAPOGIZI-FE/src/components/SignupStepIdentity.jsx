@@ -27,12 +27,23 @@ const SignupStepIdentity = forwardRef(({next}, ref) => {
         setLoading(true);
         try {
             const response = await axios.post(`${server}/user/auth/signup`,
-                {vendorName, email, password},
+                {vendor_name: vendorName, email, password},
                 {withCredentials: true}
             );
-            if (response.data?.message === 'Signup success') {
-                setMessage('Signup successful! Redirecting...')
-                setTimeout(() => navigate('/'), 1500)
+
+            if (response.data?.message === "Signup success") {
+                setMessage("Signup successful!");
+                try {
+                    const login = await axios.post(`${server}/user/auth/login`,
+                        {email, password},
+                        {withCredentials: true}
+                    );
+                    localStorage.setItem("token", login.data.token);
+                    next();
+                } catch (err) {
+                    console.error(err);
+                    setMessage("Failed to auto login. Please login manually.");
+                }
             } else {
                 setMessage(response.data?.message || 'Signup failed.')
             }
@@ -55,9 +66,22 @@ const SignupStepIdentity = forwardRef(({next}, ref) => {
     return (
         <div className="signup-steps-global">
             <div className="signup-steps-wrapper">
-                <button className="signup-close" title="Close Signup card">
-                    <img src={Close} alt="close" />
-                </button>
+                <div className="signup-cancel-wrapper">
+                    <button
+                        className="signup-cancel-button"
+                        title="Close Signup card"
+                        onClick={() => navigate('/login')}
+                    >
+                        <img src={ChevronLeft} alt="cancel" />
+                        <span>Cancel</span>
+                    </button>
+                </div>
+                <div className="signup-step-progress">
+                    <div className="signup-step-text">Step 1 of 3</div>
+                    <div className="signup-step-bar">
+                        <div className="signup-step-bar-fill" style={{width: '33%'}}></div>
+                    </div>
+                </div>
                 <div className="signup-header">
                     <div className="signup-title">Welcome,</div>
                     <span className="signup-subtitle">Let's Get You Started</span>
@@ -90,7 +114,12 @@ const SignupStepIdentity = forwardRef(({next}, ref) => {
                                 value={password}
                                 onChange={(event) => setPassword(event.target.value)}
                             />
-                            <button className="button-eye" type="button" aria-label={showPw ? 'Hide password' : 'Show password'} onClick={() => setShowPw((s) => !s)}>
+                            <button
+                                className="button-eye"
+                                type="button"
+                                aria-label={showPw ? 'Hide password' : 'Show password'}
+                                onClick={() => setShowPw((s) => !s)}
+                            >
                                 <img src={showPw ? EyeOpen : EyeClose} alt={showPw ? 'Hide' : 'Show'} />
                             </button>
                         </div>
@@ -98,7 +127,7 @@ const SignupStepIdentity = forwardRef(({next}, ref) => {
                     {message && <p className="signup-status-message">{message}</p>}
                     <div className="signup-next-wrapper">
                         <button className="signup-next-button" type="submit" disabled={loading}>
-                            {loading ? 'Signing up...' : 'Next'}
+                            {loading ? 'Wait...' : 'Next'}
                         </button>
                     </div>
                 </form>

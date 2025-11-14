@@ -1,7 +1,11 @@
+import { useState } from 'react'
 import Close from '../assets/x.svg'
 import '../styles/FileDropzone.css'
+import Upload from '../assets/upload.svg'
+import Load from '../assets/download.svg'
 
-const FileDropzone = ({label, note, photos, setPhotos, inputId}) => {
+const FileDropzone = ({label, note, photos, setPhotos, inputId, error}) => {
+    const [isDragging, setIsDragging] = useState(false);
 
     const mergePhotos = (prev, incoming) => {
         const map = new Map();
@@ -9,10 +13,36 @@ const FileDropzone = ({label, note, photos, setPhotos, inputId}) => {
         return Array.from(map.values());
     };
 
-    const handleSelectPhoto =  (event) => {
+    const handleSelectPhoto = (event) => {
         const selected = Array.from(event.target.files || []);
         setPhotos((prev) => mergePhotos(prev, selected));
         event.target.value = '';
+    };
+
+    const handleDragOver = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setIsDragging(true);
+    };
+
+    const handleDragLeave = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setIsDragging(false);
+    };
+
+    const handleDrop = (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        setIsDragging(false);
+
+        const files = Array.from(event.dataTransfer.files).filter(
+            file => file.type.startsWith('image/')
+        );
+
+        if (files.length > 0) {
+            setPhotos((prev) => mergePhotos(prev, files));
+        }
     };
 
     const removePhoto = (index) => {
@@ -22,11 +52,16 @@ const FileDropzone = ({label, note, photos, setPhotos, inputId}) => {
     return (
         <div className="signup-zone">
             <div className="signup-zone-header">
-                <p className="signup-label">{label}</p>
+                <p className="signup-zone-label">{label}</p>
                 {note && <span className="signup-zone-note">{note}</span>}
             </div>
-
-            <label className="signup-dropzone" htmlFor={inputId}>
+            <label
+                className={`signup-dropzone ${isDragging ? 'dragover' : ''} ${photos.length > 0 ? 'has-photos' : ''} ${error ? 'error' : ''}`}
+                htmlFor={inputId}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+            >
                 <input
                     id={inputId}
                     type="file"
@@ -35,23 +70,31 @@ const FileDropzone = ({label, note, photos, setPhotos, inputId}) => {
                     onChange={handleSelectPhoto}
                     style={{display: "none"}}
                 />
-                <div className="signup-dropzone-inner">
-                    <p><b>Click to upload</b> or drag files here</p>
-                    <span className="signup-dropzone-hint">You can add multiple photos</span>
-                </div>
+                {photos.length === 0 ? (
+                    <div className="signup-dropzone-inner">
+                        <img src={Load} alt="Upload" />
+                        <p><b>Click to upload</b> or drag files here</p>
+                        <span className="signup-dropzone-hint">You can add multiple photos</span>
+                    </div>
+                ) : (
+                    <div className="signup-photo-preview">
+                        {photos.map((photo, idx) => (
+                            <div className="signup-photo-item" key={`${photo.name}-${idx}`}>
+                                <img src={URL.createObjectURL(photo)} alt={`Preview ${idx + 1}`} className="signup-photo-thumb" />
+                                <button
+                                    className="signup-photo-remove"
+                                    type="button"
+                                    title="Remove photo"
+                                    onClick={(event) => {event.preventDefault();removePhoto(idx);}}
+                                >
+                                    <img src={Close} alt="" />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </label>
-            {photos.length > 0 && (
-                <div className="signup-photo-preview">
-                    {photos.map((photo, idx) => (
-                        <div className="signup-photo-item" key={`${photo.name}-${idx}`}>
-                            <img src={URL.createObjectURL(photo)} alt="preview" className="signup-photo-thumb" />
-                            <button className="signup-photo-remove" title="Remove photo" onClick={() => removePhoto(idx)}>
-                                <img src={Close} alt="remove" />
-                            </button>
-                        </div>
-                    ))}
-                </div>
-            )}
+            {error && <span className="signup-zone-error">{error}</span>}
         </div>
     );
 }
