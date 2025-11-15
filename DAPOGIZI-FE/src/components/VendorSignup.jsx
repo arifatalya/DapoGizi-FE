@@ -20,7 +20,7 @@ const VendorSignup = () => {
     const prevStep = () => setStep((step) => step - 1);
     const finish = () => {
         console.log('Onboarding completed!');
-        navigate('/login');
+        navigate('/home');
     };
 
     return (

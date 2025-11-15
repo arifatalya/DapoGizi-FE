@@ -51,7 +51,7 @@ const SignupStepKitchen = forwardRef(({prev, finish}, ref) => {
             const token = localStorage.getItem("token");
             const allPhotos = [...cookingPhotos, ...storagePhotos, ...dishwashingPhotos];
             const form = new FormData();
-            allPhotos.forEach((photo) => form.append('kitchens', photo));
+            allPhotos.forEach((photo) => form.append('photos', photo));
 
             const response = await axios.put(`${server}/vendor/kitchen/photos?replace=true`, form,
                 {
