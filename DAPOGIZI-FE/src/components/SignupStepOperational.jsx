@@ -77,7 +77,7 @@ const SignupStepOperational = forwardRef(({next, prev}, ref) => {
                     </div>
                 </div>
                 <div className="signup-header">
-                    <div className="signup-title">Provide your Business Details</div>
+                    <div className="signup-title">Provide Your Kitchen Details</div>
                     <span className="signup-subtitle">Operational Information</span>
                 </div>
                 <form className="signup-form" onSubmit={handleSubmitOps}>

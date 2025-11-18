@@ -1,12 +1,18 @@
 import HomeNavbar from '../components/HomeNavbar.jsx'
 import QuickAccessCard from '../components/QuickAccessCard.jsx'
 import Sidebar from '../components/Sidebar.jsx'
+import MealPlanModal from '../components/MealPlanModal.jsx'
 import Guidelines from '../assets/guideline.png'
 import MealPlan from '../assets/mealplan.png'
 import Feedbacks from '../assets/feedback.png'
 import '../styles/VendorHomePage.css'
+import {useState} from "react";
 
 function VendorHomePage() {
+    const [mealPlanModalOpen, setMealPlanModalOpen] = useState(false);
+    const selectedPlan = null;
+    const refreshList = () => {};
+
     return (
         <>
             <div className="homepage-wrapper">
@@ -32,7 +38,8 @@ function VendorHomePage() {
                         description="Read feedback from nutrition teams and schools, and find improvement notes on your recent submissions."
                     />
                 </div>
-                <Sidebar />
+                <Sidebar isMealModalOpen={mealPlanModalOpen} openMealModal={() => setMealPlanModalOpen(true)}/>
+                <MealPlanModal isOpen={mealPlanModalOpen} onClose={() => setMealPlanModalOpen(false)} plan={selectedPlan} refreshList={refreshList} />
             </div>
         </>
     );

@@ -83,7 +83,7 @@ const SignupStepIdentity = forwardRef(({next}, ref) => {
                     </div>
                 </div>
                 <div className="signup-header">
-                    <div className="signup-title">Welcome,</div>
+                    <div className="signup-title">Create a New Account</div>
                     <span className="signup-subtitle">Let's Get You Started</span>
                 </div>
                 <form className="signup-form" onSubmit={handleSignup}>

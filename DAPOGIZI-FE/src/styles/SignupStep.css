@@ -118,7 +118,7 @@
     font-size: 28px;
     font-weight: 600;
     color: #1f2937;
-    margin-bottom: 4px;
+    margin-bottom: 10px;
     letter-spacing: -0.3px;
 }
 
@@ -154,7 +154,7 @@
 .signup-field input {
     width: 100%;
     border: 1px solid #d7dee7;
-    border-radius: 6px;
+    border-radius: 12px;
     background: #f8fcf9;
     padding: 16px 14px;
     color: #111827;
@@ -164,7 +164,7 @@
 }
 
 .signup-field input:hover {
-    background-color: #eaeef1;
+    background-color: #eff6ed;
 }
 
 .signup-field input:focus {

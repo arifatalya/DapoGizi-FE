@@ -12,8 +12,9 @@ import Feedback from '../assets/feedback.svg'
 import Settings from '../assets/settings.svg'
 import Logout from '../assets/logout.svg'
 import Login from '../assets/login.svg'
+import Meal from '../assets/meal.svg'
 
-function Sidebar() {
+function Sidebar({isMealModalOpen, openMealModal}) {
     const [isActive, setIsActive] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
@@ -34,6 +35,12 @@ function Sidebar() {
             getVendor(token);
         }
     }, [])
+
+    useEffect(() => {
+        if (isMealModalOpen) {
+            setIsActive(false);
+        }
+    }, [isMealModalOpen]);
 
     const getVendor = async (token) => {
         try {
@@ -85,6 +92,14 @@ function Sidebar() {
                         <Link to="/monitor" className="sidebar-menu-link" onClick={handleInactive}>
                             <img src={Monitor} alt="monitoring" height={18} width={18}/> Monitoring
                         </Link>
+                    </div>
+                    <div className="menu-wrapper">
+                        <button className="sidebar-menu-button" onClick={() => {
+                            openMealModal();
+                            setIsActive(false);
+                        }}>
+                            <img src={Meal} alt="meal" height={18} width={18}/> Add Meal Plan
+                        </button>
                     </div>
                     <div className="menu-wrapper">
                         <Link to="/profile" className="sidebar-menu-link" onClick={handleInactive}>

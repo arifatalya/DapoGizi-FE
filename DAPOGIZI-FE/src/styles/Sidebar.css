@@ -151,6 +151,23 @@
     opacity: 0.8;
 }
 
+.sidebar-menu-button {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    background-color: #ffffff;
+    padding: 14px 18px;
+    border-radius: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.sidebar-menu-button:hover {
+    background-color: #d7dde7;
+}
+
 .sidebar-footer {
     padding: 16px 20px 24px;
     border-top: 1px solid #e5e7eb;

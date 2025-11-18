@@ -58,7 +58,7 @@ const SignupStepKitchen = forwardRef(({prev, finish}, ref) => {
                     withCredentials: true,
                     headers: {
                         Authorization: `Bearer ${token}`,
-                        'Content-Type': 'multipart/form-data'
+                        // 'Content-Type': 'multipart/form-data'
                     }
                 });
             if (response.data?.message === 'Kitchen photos updated') {
@@ -67,7 +67,8 @@ const SignupStepKitchen = forwardRef(({prev, finish}, ref) => {
                 setMessage(response.data?.message || 'Failed to update kitchen photos.');
             }
         } catch (err) {
-            console.log(err);
+            console.log("ERR DATA:", err.response?.data);
+            console.log("ERR DETAILS:", err);
             setMessage('Error uploading kitchen photos. Please try again.');
         } finally {
             setLoading(false);
