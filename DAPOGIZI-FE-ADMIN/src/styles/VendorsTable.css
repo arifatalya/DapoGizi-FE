@@ -1,0 +1,226 @@
+.vendors-table-global-wrapper {
+    background-color: #f8f8f8;
+    min-height: 100vh;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    box-sizing: border-box;
+}
+
+.vendors-table-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.vendors-table-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    align-items: center;
+}
+
+.searchbar-wrapper {
+    position: relative;
+}
+
+.search-button {
+    position: absolute;
+    left: 14px;
+    top: 15px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    opacity: 0.6;
+    cursor: default;
+}
+
+.search-button img {
+    width: 14px;
+    height: 14px;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.vendors-table-search {
+    display: flex;
+    width: 240px;
+    height: 42px;
+    padding: 2px 38px 2px 42px;
+    border-radius: 8px;
+    border: 1px solid #e3e5ec;
+    background: #f5f5f7;
+    font-size: 14px;
+    color: #1f1f1f;
+    transition: 0.2s ease;
+}
+
+.vendors-table-search:focus {
+    border-color: #139f47;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+    outline: none;
+}
+
+.search-clear-button {
+    position: absolute;
+    right: 12px;
+    top: 14px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.search-clear-button img {
+    width: 20px;
+    height: 20px;
+    opacity: 0.4;
+    transition: opacity 0.2s ease;
+}
+
+.vendors-table-filter {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 14px 16px;
+    width: 95px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background-image: url("../assets/dropdown.svg");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px;
+    background-color: #f5f5f7;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.vendors-table-filter:focus {
+    border-color: #139f47;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12);
+    outline: none;
+}
+
+.vendors-table-wrapper {
+    background-color: #ffffff;
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+    overflow-x: auto;
+}
+
+.vendors-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.vendors-table th {
+    text-align: left;
+    padding: 14px 12px;
+    background-color: #f3f3f2;
+    color: #374151;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.vendors-table td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #f1f1f1;
+    font-size: 14px;
+    color: #1a1a1a;
+}
+
+.clickable-vendor-row {
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.clickable-vendor-row:hover {
+    background-color: #f9fdf8;
+}
+
+.view-vendor-button {
+    padding: 8px 14px;
+    background: linear-gradient(75deg, #199d1d 0%, #117c38 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    transition: box-shadow 0.25s ease;
+}
+
+.view-vendor-button:hover {
+    box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3);
+}
+
+.vendors-empty {
+    text-align: center;
+    padding: 40px;
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.vendors-table-skeleton-row {
+    height: 48px;
+    background: linear-gradient(90deg, #eeeeee 25%, #f5f5f5 37%, #eeeeee 63%);
+    background-size: 400% 100%;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    animation: shimmer 1.4s infinite;
+}
+
+.vendors-table-pagination {
+    margin-top: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+}
+
+.previous-button, .next-button {
+    background: linear-gradient(45deg, #3dbd40 0%, #279a43 100%);
+    border-radius: 10px;
+    border: none;
+    padding: 10px 10px 8px 10px;
+    cursor: pointer;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+}
+
+.previous-button img, .next-button img {
+    width: 16px;
+    height: 16px;
+}
+
+.previous-button:disabled, .next-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.page-number {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}

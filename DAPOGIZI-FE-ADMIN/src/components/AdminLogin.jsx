@@ -26,7 +26,7 @@ const AdminLogin = () => {
         setError('')
 
         try {
-            const {data} = await axios.post(`${url}/auth/login`, form, {withCredentials: true})
+            const {data} = await axios.post(`${url}/user/auth/login`, form, {withCredentials: true})
             if (data?.token) {
                 localStorage.setItem('token', data.token)
                 navigate('/home')
@@ -34,6 +34,7 @@ const AdminLogin = () => {
                 setError(data?.message || 'Admin login failed')
             }
         } catch (error) {
+            console.error("Admin login error:", error.message);
             let msg = "Please recheck your credentials.";
             if (error.code === "ERR_NETWORK" || error.message.includes("Network Error")) {
                 msg = "Server is down. Try again later.";
