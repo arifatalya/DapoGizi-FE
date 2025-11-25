@@ -117,3 +117,64 @@ exports.getVendorMealPlanStatus = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
+exports.getFullVendorProfile = async (req, res) => {
+  try {
+    const vendorId = req.params.vendorId;
+    const vendor = await.Vendor.findById(vendorId).populate("user_id", "email");
+
+    if (!vendor) {
+      return res.status(404).json({
+        status: false,
+        message: "Vendor not found"
+      });
+    }
+
+    const kitchenChecks = await KitchenCheck.find({vendor_id: vendorId}).populate("checked_by", "email");
+    const mealPlans = await MealPlan.find({vendor_id: vendorId}).populate("approved_by", "email").sort({createdAt: -1});
+
+    const response = {
+      vendor_details: {
+        id: vendor._id,
+        vendor_name: vendor.vendor_name,
+        email: vendor.user_id?.email || null,
+        address: vendor.address || null,
+        operating_days: vendor.operating_days || [],
+        location: vendor.location || null,
+        kitchen_photos: vendor.kitchen_photos || [],
+        target_schools: vendor.target_schools || [],
+        created_at: vendor.createdAt,
+        updated_at: vendor.updatedAt,
+      },
+      kitchen_checks: kitchenChecks.map((check) => ({
+        id: check._id,
+        check_date: check.check_date,
+        score: check.score,
+        status: check.status,
+        notes: check.notes,
+        checked_by: check.checked_by?.email || null,
+      })),
+      meal_plans: mealPlans.map((meal) => ({
+        id: meal._id,
+        name: meal.name,
+        status: meal.status,
+        image_url: meal.image_url || null,
+        approved_by: meal.approved_by?.email || null,
+        approved_at: meal.approved_at || null,
+        created_at: meal.createdAt,
+      }))
+    };
+
+    return res.json({
+      success: true,
+      data: response
+    });
+
+} catch (err) {
+    console.error("Unable to fetch full vendor profile:", err);
+    res.status(500).json({
+      success: false,
+      message: "Get full vendor profile error"
+    });
+  }
+};

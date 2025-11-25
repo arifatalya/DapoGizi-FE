@@ -129,7 +129,7 @@ function VendorsTable({onOpenVendorModal}) {
                                 <td>{vendor.email}</td>
                                 <td>{vendor.address}</td>
                                 <td>
-                                    <button className="view-vendor-button" onClick={((event) => {event.stopPropagation(); onOpenVendorModal(vendor.id);})}>
+                                    <button className="view-vendor-button" onClick={((event) => {event.stopPropagation(); onOpenVendorModal(vendor)})}>
                                         View
                                     </button>
                                 </td>

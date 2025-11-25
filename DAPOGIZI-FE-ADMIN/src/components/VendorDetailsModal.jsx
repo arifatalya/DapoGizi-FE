@@ -3,6 +3,8 @@ import {createPortal} from 'react-dom'
 import axios from 'axios'
 import '../styles/VendorDetailsModal.css'
 import Close from '../assets/x.svg'
+import CheckMark from '../assets/check-mark.svg'
+import CrossCircle from '../assets/cross-circle.svg'
 
 function VendorDetailsModal({vendor, isOpen, onClose}) {
     const server = `${import.meta.env.VITE_API_URL}`;
@@ -75,6 +77,11 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
         }
     };
 
+    const renderStatusBadge = (status) => {
+        const stat = status.toLowerCase();
+        return <span className={`status-badge ${stat}`}>{status}</span>;
+    };
+
     return createPortal(
         <>
             <div className="vendor-modal-backdrop" onClick={handleBackdrop}>
@@ -97,21 +104,21 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
                         ) : (
                             <>
                                 <div className="vendor-identity">
-                                    <h3>{vendorDetails?.vendor_name || vendor.vendor_name}</h3>
+                                    <h2>{vendorDetails?.vendor_name || vendor.vendor_name}</h2>
                                     <div className="vendor-info-wrapper">
                                         <div className="vendor-info-block">
-                                            <p className="vendor-info-label">Email</p>
+                                            <p className="vendor-details-label">Email</p>
                                             <p className="vendor-info-value">{vendorDetails?.email || vendor.email}</p>
                                         </div>
                                         <div className="vendor-info-block">
-                                            <p className="vendor-info-label">Address</p>
+                                            <p className="vendor-details-label">Address</p>
                                             <p className="vendor-info-value">{vendorDetails?.address || vendor.address}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="vendor-sections">
-                                    <div className="vendor-section-item">
-                                        <h2>Kitchen Status</h2>
+                                <div className="vendor-section">
+                                    <h2 className="vendor-section-label">Kitchen Status</h2>
+                                    <div className="vendor-details-wrapper">
                                         <table className="kitchen-status-table">
                                             <thead>
                                             <tr>
@@ -120,12 +127,13 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
                                                 <th>Status</th>
                                                 <th>Date</th>
                                                 <th>Checked By</th>
+                                                <th>Action</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             {kitchenChecks.length === 0 && (
                                                 <tr>
-                                                    <td colSpan="5" className="empty-table-message">
+                                                    <td colSpan="6" className="empty-table-message">
                                                         No kitchen checks found for this vendor.
                                                     </td>
                                                 </tr>
@@ -133,36 +141,78 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
                                             {kitchenChecks.map((check) => (
                                                 <tr key={check.id}>
                                                     <td>{check.id}</td>
+                                                    <td>{check.score}</td>
                                                     <td>
-                                                        <span className={`kitchen-status-badge ${check.status.toLocaleLowerCase()}`}>
-                                                            {check.status}
-                                                        </span>
+                                                        {renderStatusBadge(check.status)}
                                                     </td>
                                                     <td>{new Date(check.check_date).toLocaleDateString()}</td>
                                                     <td>{check.checked_by}</td>
+                                                    <td>
+                                                        <button className="view-kitchen-details-button" onClick={() => console.log("to do: open kitchen image modal")}>
+                                                            View
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             ))}
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div className="vendor-section-item">
-                                        <h2>Meal Plans Status</h2>
-                                        <table className="meal-plans-table">
-                                            <thead>
-                                            <tr>
-                                                <th>Meal Plan</th>
-                                                <th>Status</th>
-                                            </tr>
-                                            </thead>
-                                        </table>
-                                    </div>
                                 </div>
+                                    <div className="vendor-section">
+                                        <h2 className="vendor-section-label">Meal Plans Status</h2>
+                                        <div className="vendor-details-wrapper">
+                                            <table className="meal-plans-table">
+                                                <thead>
+                                                <tr>
+                                                    <th>Meal Plan</th>
+                                                    <th>Status</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {mealPlans.length === 0 ? (
+                                                    <tr>
+                                                        <td colSpan="3" className="empty-row">
+                                                            No meal plans submitted.
+                                                        </td>
+                                                    </tr>
+                                                ) : (mealPlans.map((meal, idx) => (
+                                                        <tr key={idx}>
+                                                            <td>{meal.meal_plan?.name || "Meal Plan"}</td>
+                                                            <td>{renderStatusBadge(meal.meal_plan?.status)}</td>
+                                                            <td>
+                                                                {meal.meal_plan?.status === "pending" ? (
+                                                                    <div className="action-buttons">
+                                                                        <button className="reject-button" onClick={() => console.log("to do: reject meal plan")}>
+                                                                            <img src={CrossCircle} alt="reject" />
+                                                                        </button>
+                                                                        <button className="approve-button" onClick={() => console.log("to do: approve meal plan")}>
+                                                                            <div className="approve-img-wrapper">
+                                                                                <img src={CheckMark} alt="approve" />
+                                                                            </div>
+                                                                            <p>Approve</p>
+                                                                        </button>
+                                                                    </div>
+                                                                ) : (
+                                                                    <span className="disabled-action">
+                                                                        {meal.meal_plan?.status}
+                                                                    </span>
+                                                                )}
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                )}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                             </>
                         )}
                     </div>
                 </div>
             </div>
-        </>
+        </>, modalRoot
     );
-
 }
+
+export default VendorDetailsModal;
