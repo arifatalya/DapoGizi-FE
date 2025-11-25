@@ -121,7 +121,7 @@ exports.getVendorMealPlanStatus = async (req, res) => {
 exports.getFullVendorProfile = async (req, res) => {
   try {
     const vendorId = req.params.vendorId;
-    const vendor = await.Vendor.findById(vendorId).populate("user_id", "email");
+    const vendor = await Vendor.findById(vendorId).populate("user_id", "email");
 
     if (!vendor) {
       return res.status(404).json({
