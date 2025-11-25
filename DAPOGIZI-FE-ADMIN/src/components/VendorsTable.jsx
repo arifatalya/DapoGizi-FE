@@ -49,7 +49,7 @@ function VendorsTable({onOpenVendorModal}) {
            }));
            const results = fuzzysort.go(searchQuery, prepared, {
                key: "target",
-               threshold: 0
+               threshold: -10000
            });
            temp = results.map((r) => r.obj.vendor);
        }
