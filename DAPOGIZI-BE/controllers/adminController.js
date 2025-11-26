@@ -62,6 +62,7 @@ exports.getKitchenChecksForVendor = async (req, res) => {
       score: kitchenCheck.score,
       status: kitchenCheck.status,
       notes: kitchenCheck.notes || "",
+      kitchen_photos: kitchenCheck.kitchen_photos || [],
       checked_by: kitchenCheck.checked_by?.email || null,
     }));
 
@@ -120,7 +121,7 @@ exports.getVendorMealPlanStatus = async (req, res) => {
 
 exports.getFullVendorProfile = async (req, res) => {
   try {
-    const vendorId = req.params.vendorId;
+    const vendorId = req.params.id;
     const vendor = await Vendor.findById(vendorId).populate("user_id", "email");
 
     if (!vendor) {
@@ -152,6 +153,7 @@ exports.getFullVendorProfile = async (req, res) => {
         score: check.score,
         status: check.status,
         notes: check.notes,
+        kitchen_photos: check.kitchen_photos || [],
         checked_by: check.checked_by?.email || null,
       })),
       meal_plans: mealPlans.map((meal) => ({

@@ -47,6 +47,7 @@ const SignupStepIdentity = forwardRef(({next}, ref) => {
             } else {
                 setMessage(response.data?.message || 'Signup failed.')
             }
+
         } catch (err) {
             console.log(err);
             let msg = "Please fill in all fields.";

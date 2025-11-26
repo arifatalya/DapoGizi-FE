@@ -9,24 +9,24 @@ import Warning from '../assets/warning-circle.svg'
 
 const AdminLogin = () => {
     const navigate = useNavigate()
-    const url = `${import.meta.env.VITE_API_URL}`
+    const server = `${import.meta.env.VITE_API_URL}`
     const [form, setForm] = useState({email: '', password: ''})
     const [pwVisibility, setPwdVisibility] = useState(false)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
 
-    const onChange = (e) => {
-        const {name, value} = e.target
+    const onChange = (event) => {
+        const {name, value} = event.target
         setForm({...form, [name]: value})
     }
 
-    const onSubmit = async (e) => {
-        e.preventDefault()
+    const onSubmit = async (event) => {
+        event.preventDefault()
         setLoading(true)
         setError('')
 
         try {
-            const {data} = await axios.post(`${url}/user/auth/login`, form, {withCredentials: true})
+            const {data} = await axios.post(`${server}/user/auth/login`, form, {withCredentials: true})
             if (data?.token) {
                 localStorage.setItem('token', data.token)
                 navigate('/home')

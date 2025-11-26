@@ -38,6 +38,7 @@
 }
 
 .signup-dropzone.has-photos {
+    display: block !important;
     padding: 14px;
     border: 2px solid #91c594;
     background: #f8fdf8;

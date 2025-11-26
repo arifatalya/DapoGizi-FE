@@ -9,7 +9,7 @@ import Warning from '../assets/warning-triangle.svg'
 
 const VendorLogin = () => {
     const navigate = useNavigate()
-    const url = `${import.meta.env.VITE_API_URL}`
+    const server = `${import.meta.env.VITE_API_URL}`
     const [form, setForm] = useState({ email: '', password: '' })
     const [showPw, setShowPw] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -20,7 +20,7 @@ const VendorLogin = () => {
     useEffect(() => {
         const token = localStorage.getItem('token')
         if (!token) return
-        axios.get(`${url}/user/auth/me`, {
+        axios.get(`${server}/user/auth/me`, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true,
             }).then((res) => {
@@ -31,7 +31,7 @@ const VendorLogin = () => {
                 }
             })
             .catch(() => localStorage.removeItem('token'))
-    }, [url])
+    }, [server])
 
     const onChange = (e) => {
         setForm((s) => ({ ...s, [e.target.name]: e.target.value }))
@@ -42,13 +42,13 @@ const VendorLogin = () => {
         setErr('')
         setLoading(true)
         try {
-            const { data } = await axios.post(`${url}/user/auth/login`, {
+            const { data } = await axios.post(`${server}/user/auth/login`, {
                 email: form.email.trim(), password: form.password
                 }, {withCredentials: true }
             )
             if (data?.token) {
                 localStorage.setItem('token', data.token)
-                const profile = await axios.get(`${url}/user/auth/me`, {
+                const profile = await axios.get(`${server}/user/auth/me`, {
                     headers: { Authorization: `Bearer ${data.token}` },
                     withCredentials: true,
                 });

@@ -15,11 +15,11 @@ import Login from '../assets/login.svg'
 import Meal from '../assets/meal.svg'
 
 function Sidebar({isMealModalOpen, openMealModal}) {
+    const server = `${import.meta.env.VITE_API_URL}`;
     const [isActive, setIsActive] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
-    const url = `${import.meta.env.VITE_API_URL}`;
 
     const handleActive = () => {
         setIsActive(true);
@@ -44,7 +44,7 @@ function Sidebar({isMealModalOpen, openMealModal}) {
 
     const getVendor = async (token) => {
         try {
-            const { data } = await axios.get(`${url}/user/auth/me`, {
+            const { data } = await axios.get(`${server}/user/auth/me`, {
                 headers: {Authorization: `Bearer ${token}`},
             });
             setLoggedIn(Boolean(data?.vendor))

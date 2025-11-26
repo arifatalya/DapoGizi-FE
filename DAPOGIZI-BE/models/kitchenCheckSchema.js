@@ -22,6 +22,11 @@ const kitchenCheckSchema = new mongoose.Schema({
   notes: {
     type: String,
   },
+  kitchen_photos: {
+    type: [String],
+    default: [],
+    required: true,
+  },
   checked_by: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Users",

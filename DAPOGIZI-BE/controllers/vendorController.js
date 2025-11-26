@@ -1,6 +1,8 @@
 const Vendor = require("../models/vendorSchema");
 const MealPlan = require("../models/mealPlanSchema");
+const KitchenCheck = require("../models/kitchenCheckSchema");
 const { geocodeAddress, findNearbySchools } = require("../utils/geoapify");
+const { uploadToBucket } = require("../utils/upload");
 
 exports.updateProfile = async (req, res) => {
   try {
@@ -55,26 +57,126 @@ exports.updateProfile = async (req, res) => {
   }
 };
 
+// exports.updateKitchenPhotos = async (req, res) => {
+//   try {
+//     const userId = req.user._id;
+//     const vendor = await Vendor.findOne({ user_id: userId });
+//     if (!vendor) return res.status(404).json({ message: "Vendor not found" });
+//
+//     const files = req.files || [];
+//     const urls = files.map((f) => `/uploads/kitchens/${f.filename}`);
+//
+//     const replace = (req.query.replace || "").toLowerCase() === "true";
+//     vendor.kitchen_photos = replace ? urls : [...(vendor.kitchen_photos || []), ...urls];
+//
+//     await vendor.save();
+//     return res.json({
+//       message: "Kitchen photos updated",
+//       kitchen_photos: vendor.kitchen_photos,
+//     });
+//   } catch (err) {
+//     console.error("updateKitchenPhotos error:", err);
+//     return res.status(500).json({ message: "Server error" });
+//   }
+// };
+
 exports.updateKitchenPhotos = async (req, res) => {
   try {
     const userId = req.user._id;
-    const vendor = await Vendor.findOne({ user_id: userId });
-    if (!vendor) return res.status(404).json({ message: "Vendor not found" });
+    const vendor = await Vendor.findOne({user_id: userId});
+
+    if (!vendor) {
+      return res.status(404).json({
+        message: "Vendor not found"
+      });
+    }
 
     const files = req.files || [];
-    const urls = files.map((f) => `/uploads/kitchens/${f.filename}`);
+    if (files.length === 0) {
+      return res.status(400).json({
+        message: "No photos provided"
+      });
+    }
+
+    const urls = await Promise.all(files.map((file) =>
+    uploadToBucket(file.buffer, file.originalname, file.mimetype, `kitchens/${userId}`)));
 
     const replace = (req.query.replace || "").toLowerCase() === "true";
     vendor.kitchen_photos = replace ? urls : [...(vendor.kitchen_photos || []), ...urls];
-
     await vendor.save();
+
     return res.json({
       message: "Kitchen photos updated",
       kitchen_photos: vendor.kitchen_photos,
     });
+
   } catch (err) {
-    console.error("updateKitchenPhotos error:", err);
-    return res.status(500).json({ message: "Server error" });
+    console.error("Uploading kitchen photos error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while uploading kitchen photos"
+    });
+  }
+};
+
+exports.getMyKitchenChecks = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const vendor = await Vendor.findOne({ user_id: userId });
+
+    if (!vendor) {
+      return res.status(404).json({
+        success: false,
+        message: "Vendor not found"
+      });
+    }
+
+    const filters = {vendor_id: vendor._id};
+    const {date, status} = req.query;
+    if (date) {
+      const parsedDate = new Date(date);
+      if (isNaN(parsedDate.getTime())) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid date format. Use YYYY-MM-DD"
+        });
+      }
+      parsedDate.setHours(0, 0, 0, 0);
+      filters.check_date = {$gte: parsedDate};
+    }
+
+    if (status && ["clean", "unclean"].includes(status.toLowerCase())) {
+      filters.status = status.toLowerCase();
+    }
+
+    const checks = await KitchenCheck.find(filters).populate("checked_by", "email").sort({check_date: -1});
+
+    const formattedChecks = checks.map((check) => ({
+      id: check._id,
+      check_date: check.check_date,
+      score: check.score,
+      status: check.status,
+      notes: check.notes || "",
+      photo_urls: check.photo_urls || [],
+      checked_by: check.checked_by?.email || null,
+    }));
+
+    return res.json({
+      success: true,
+      total: checks.length,
+      data: formattedChecks,
+      after_filter: {
+        date: date || null,
+        status: status || null,
+      },
+    });
+
+  } catch (err) {
+    console.error("Get kitchen checks error:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while fetching kitchen checks"
+    });
   }
 };
 
