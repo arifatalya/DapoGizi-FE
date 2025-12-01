@@ -88,19 +88,19 @@ function ViewKitchenModal({isOpen, onClose, vendorId, photos, onSubmitted}) {
                             )}
                         </div>
                         <form className="kitchen-check-form">
-                            <label>Score</label>
-                            <input
-                                type="number"
-                                value={score}
-                                min="0"
-                                max="100"
-                                onChange={(event) => setScore(event.target.value)}
-                            />
+                            {/*<label>Score</label>*/}
+                            {/*<input*/}
+                            {/*    type="number"*/}
+                            {/*    value={score}*/}
+                            {/*    min="0"*/}
+                            {/*    max="100"*/}
+                            {/*    onChange={(event) => setScore(event.target.value)}*/}
+                            {/*/>*/}
                             <label>Status</label>
                             <select value={status}
                                     onChange={(event) => setStatus(event.target.value)}>
-                                <option value="unclean">Unclean</option>
                                 <option value="clean">Clean</option>
+                                <option value="dirty">Dirty</option>
                             </select>
                             <label>Notes</label>
                             <textarea

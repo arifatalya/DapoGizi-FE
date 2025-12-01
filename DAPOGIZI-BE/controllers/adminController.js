@@ -131,7 +131,7 @@ const getFullVendorProfile = async (req, res) => {
     }
 
     const kitchenChecks = await KitchenCheck.find({vendor_id: vendorId}).populate("checked_by", "email");
-    const mealPlans = await MealPlan.find({vendor_id: vendorId}).populate("approved_by", "email").sort({createdAt: -1});
+    const mealPlans = await MealPlan.find({vendor_id: vendorId}).populate("vendor_id", "vendor_name address").sort({createdAt: -1});
 
     const response = {
       vendor_details: {
@@ -157,12 +157,14 @@ const getFullVendorProfile = async (req, res) => {
       })),
       meal_plans: mealPlans.map((meal) => ({
         id: meal._id,
+        vendor_id: meal.vendor_id?._id,
+        vendor_name: meal.vendor_id?.vendor_name,
         name: meal.name,
+        description: meal.description,
+        image_url: meal.image_url,
         status: meal.status,
-        image_url: meal.image_url || null,
         approved_by: meal.approved_by?.email || null,
-        approved_at: meal.approved_at || null,
-        created_at: meal.createdAt,
+        created_at: meal.createdAt
       }))
     };
 
