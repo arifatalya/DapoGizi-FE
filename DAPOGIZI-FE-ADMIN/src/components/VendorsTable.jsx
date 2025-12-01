@@ -15,7 +15,7 @@ function VendorsTable({onOpenVendorModal}) {
     const [loading, setLoading] = useState(false);
     const [sortBy, setSortBy] = useState("latest");
     const [page, setPage] = useState(1);
-    const PER_PAGE = 6;
+    const PER_PAGE = 5;
     const start = (page -1) * PER_PAGE;
     const end = start + PER_PAGE;
 
@@ -104,7 +104,7 @@ function VendorsTable({onOpenVendorModal}) {
             <div className="vendors-table-wrapper">
                 {loading ? (
                     <div className="vendors-table-skeleton">
-                        {Array.from({length: 6}).map((_, index) => (
+                        {Array.from({length: 5}).map((_, index) => (
                             <div className="vendors-table-skeleton-row" key={index}></div>
                         ))}
                     </div>

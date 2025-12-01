@@ -35,9 +35,11 @@ const AdminLogin = () => {
             }
         } catch (error) {
             console.error("Admin login error:", error.message);
-            let msg = "Please recheck your credentials.";
+            let msg = error.message;
             if (error.code === "ERR_NETWORK" || error.message.includes("Network Error")) {
                 msg = "Server is down. Try again later.";
+            } else if (error.message.includes("Request failed with status code 400")) {
+                msg = "Please recheck your credentials.";
             } else {
                 msg = error.message;
             }

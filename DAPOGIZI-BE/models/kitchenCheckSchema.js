@@ -16,7 +16,7 @@ const kitchenCheckSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["clean", "unclean"],
+    enum: ["clean", "dirty"],
     required: true,
   },
   notes: {

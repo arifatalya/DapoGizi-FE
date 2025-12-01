@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/userSchema");
 const dotenv = require("dotenv");
+const { kitchenPhotosUpload, mealImageUpload } = require("../utils/supabaseUpload");
 
 dotenv.config();
 
@@ -114,9 +115,29 @@ const verifyVendor = async (req, res, next) => {
   }
 };
 
+const verifyUploadKitchen = (req, res, next) => {
+  kitchenPhotosUpload(req, res, err => {
+    if (err) return res.status(400).json({
+      message: err.message || "Upload error"
+    });
+    next();
+  });
+};
+
+const verifyUploadMealPlan = (req, res, next) => {
+  mealImageUpload(req, res, err => {
+    if (err) return res.status(400).json({
+      message: err.message || "Upload error"
+    });
+    next();
+  });
+};
+
 module.exports = {
   auth,
   verifyToken,
   verifyAdmin,
-  verifyVendor
+  verifyVendor,
+  verifyUploadKitchen,
+  verifyUploadMealPlan
 };

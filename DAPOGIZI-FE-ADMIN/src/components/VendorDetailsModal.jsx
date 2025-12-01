@@ -5,6 +5,8 @@ import '../styles/VendorDetailsModal.css'
 import Close from '../assets/x.svg'
 import CheckMark from '../assets/check-mark.svg'
 import CrossCircle from '../assets/cross-circle.svg'
+import ViewKitchenModal from '../components/ViewKitchenModal.jsx'
+import ViewKitchenPhotosOnlyModal from './ViewKitchenPhotosOnlyModal.jsx'
 
 function VendorDetailsModal({vendor, isOpen, onClose}) {
     const server = `${import.meta.env.VITE_API_URL}`;
@@ -12,8 +14,14 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
     const [vendorDetails, setVendorDetails] = useState(null);
     const [kitchenChecks, setKitchenChecks] = useState([]);
     const [mealPlans, setMealPlans] = useState([]);
+    const [selectedMealPlans, setSelectedMealPlans] = useState([]);
+    const [isSelectAll, setIsSelectAll] = useState(false);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
+    const [kitchenModalOpen, setKitchenModalOpen] = useState(false);
+    const [selectedKitchenPhotos, setSelectedKitchenPhotos] = useState([]);
+    const [photoModalOpen, setPhotoModalOpen] = useState(false);
+    const [photoModalImages, setPhotoModalImages] = useState([]);
 
     useEffect(() => {
         if (!isOpen) {
@@ -37,14 +45,15 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
                 const token = localStorage.getItem("token");
                 const headers = token ? {Authorization: `Bearer ${token}`} : {};
                 const [vendorRes, kitchenRes, mealPlansRes] = await Promise.all([
-                    axios.get(`${server}/admin/view-vendor/${vendor.id}`, {headers}),
+                    axios.get(`${server}/admin/vendor-profile/${vendor.id}`, {headers}),
                     axios.get(`${server}/admin/kitchen-checks/vendor/${vendor.id}`, {headers}),
                     axios.get(`${server}/admin/vendors-meal-plans`, {headers}),
                 ]);
 
                 if (canceled) return;
 
-                setVendorDetails(vendorRes.data?.data || vendor);
+                setVendorDetails(vendorRes.data?.data?.vendor_details || vendor);
+
                 const checks = kitchenRes.data?.data || [];
                 setKitchenChecks(checks);
 
@@ -69,10 +78,16 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
         };
     }, [isOpen, vendor, server]);
 
+    useEffect(() => {
+        const pendingMealIds = mealPlans.filter(meal => meal.meal_plan?.status === "pending").map(meal => meal.id);
+        setIsSelectAll(pendingMealIds.length > 0 && pendingMealIds.every(id => selectedMealPlans.includes(id)));
+    }, [selectedMealPlans, mealPlans]);
+
     if (!isOpen) return null;
 
     const handleBackdrop = (event) => {
-        if (event.target.classList.contains("vendor-modal-backdrop")) {
+        if (kitchenModalOpen) return;
+        if (!kitchenModalOpen && event.target.classList.contains("vendor-modal-backdrop")) {
             onClose?.();
         }
     };
@@ -81,6 +96,79 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
         const stat = status.toLowerCase();
         return <span className={`status-badge ${stat}`}>{status}</span>;
     };
+
+    const toggleSelectOneMeal = (id) => {
+        setSelectedMealPlans((prev) =>
+            prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+        );
+    };
+
+    const toggleSelectPendingMeals = () => {
+        const pendingMealIds = mealPlans.filter((meal) => meal.meal_plan?.status === "pending").map((meal) => meal.id);
+
+        if (isSelectAll) {
+            setSelectedMealPlans([]);
+            setIsSelectAll(false);
+        } else {
+            setSelectedMealPlans(pendingMealIds);
+            setIsSelectAll(true);
+        }
+    };
+
+    const handleApproveMealPlan = async (ids) => {
+        try {
+            const token = localStorage.getItem("token");
+            await axios.patch(`${server}/admin/meal-plans/approve`, {ids}, {
+                headers: {Authorization: `Bearer ${token}`}
+            });
+            setMealPlans(prev => prev.map(meal => ids.includes(meal.id) ? {...meal, meal_plan: {...meal.meal_plan, status: "approved"}} : meal));
+            setSelectedMealPlans([]);
+            setIsSelectAll(false);
+
+        } catch (err) {
+            console.error("Error approving meal plans:", err);
+        }
+    };
+
+    const handleRejectMealPlan = async (ids) => {
+        try {
+            const token = localStorage.getItem("token");
+            await axios.patch(`${server}/admin/meal-plans/reject`, {ids}, {
+                headers: {Authorization: `Bearer ${token}`}
+            });
+            setMealPlans(prev => prev.map(meal => ids.includes(meal.id) ? {...meal, meal_plan: {...meal.meal_plan, status: "rejected"}} : meal));
+            setSelectedMealPlans([]);
+            setIsSelectAll(false);
+
+        } catch (err) {
+            console.error("Error rejecting meal plans:", err);
+        }
+    };
+
+    const openKitchenModal = (photos) => {
+        setSelectedKitchenPhotos(photos);
+        setKitchenModalOpen(true);
+    };
+
+    const closeKitchenModal = () => {
+        setKitchenModalOpen(false);
+        setSelectedKitchenPhotos([]);
+    };
+
+    const alreadyAssessed = kitchenChecks.some(check =>
+        JSON.stringify(check.kitchen_photos) === JSON.stringify(vendorDetails?.kitchen_photos)
+    );
+
+    const openPhotoOnlyModal = (photos) => {
+        setPhotoModalImages(photos);
+        setPhotoModalOpen(true);
+    };
+
+    const closePhotoOnlyModal = () => {
+        setPhotoModalOpen(false);
+        setPhotoModalImages([]);
+    };
+
 
     return createPortal(
         <>
@@ -117,7 +205,12 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
                                     </div>
                                 </div>
                                 <div className="vendor-section">
-                                    <h2 className="vendor-section-label">Kitchen Status</h2>
+                                    <div className="vendor-section-header">
+                                        <h2 className="vendor-section-label">Kitchen Status</h2>
+                                        <button className="manual-kitchen-assess" disabled={alreadyAssessed} onClick={() => !alreadyAssessed && openKitchenModal(vendorDetails?.kitchen_photos)}>
+                                            {alreadyAssessed ? "Kitchen Approved" : "Evaluate Current State"}
+                                        </button>
+                                    </div>
                                     <div className="vendor-details-wrapper">
                                         <table className="kitchen-status-table">
                                             <thead>
@@ -140,7 +233,7 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
                                             )}
                                             {kitchenChecks.map((check) => (
                                                 <tr key={check.id}>
-                                                    <td>{check.id}</td>
+                                                    <td>{check.id || check._id}</td>
                                                     <td>{check.score}</td>
                                                     <td>
                                                         {renderStatusBadge(check.status)}
@@ -148,7 +241,7 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
                                                     <td>{new Date(check.check_date).toLocaleDateString()}</td>
                                                     <td>{check.checked_by}</td>
                                                     <td>
-                                                        <button className="view-kitchen-details-button" onClick={() => console.log("to do: open kitchen image modal")}>
+                                                        <button className="view-kitchen-details-button" onClick={() => openPhotoOnlyModal(check.kitchen_photos)}>
                                                             View
                                                         </button>
                                                     </td>
@@ -164,6 +257,13 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
                                             <table className="meal-plans-table">
                                                 <thead>
                                                 <tr>
+                                                    <th>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={isSelectAll}
+                                                            onChange={toggleSelectPendingMeals}
+                                                        />
+                                                    </th>
                                                     <th>Meal Plan</th>
                                                     <th>Status</th>
                                                     <th>Action</th>
@@ -172,21 +272,32 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
                                                 <tbody>
                                                 {mealPlans.length === 0 ? (
                                                     <tr>
-                                                        <td colSpan="3" className="empty-row">
+                                                        <td colSpan="4" className="empty-row">
                                                             No meal plans submitted.
                                                         </td>
                                                     </tr>
                                                 ) : (mealPlans.map((meal, idx) => (
                                                         <tr key={idx}>
+                                                            <td>
+                                                                {meal.meal_plan?.status === "pending" ? (
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={selectedMealPlans.includes(meal.id)}
+                                                                        onChange={() => toggleSelectOneMeal(meal.id)}
+                                                                    />
+                                                                ) : (
+                                                                    <span className="no-check">—</span>
+                                                                )}
+                                                            </td>
                                                             <td>{meal.meal_plan?.name || "Meal Plan"}</td>
                                                             <td>{renderStatusBadge(meal.meal_plan?.status)}</td>
                                                             <td>
                                                                 {meal.meal_plan?.status === "pending" ? (
                                                                     <div className="action-buttons">
-                                                                        <button className="reject-button" onClick={() => console.log("to do: reject meal plan")}>
+                                                                        <button className="reject-button" onClick={() => handleRejectMealPlan([meal.id])}>
                                                                             <img src={CrossCircle} alt="reject" />
                                                                         </button>
-                                                                        <button className="approve-button" onClick={() => console.log("to do: approve meal plan")}>
+                                                                        <button className="approve-button" onClick={() => handleApproveMealPlan([meal.id])}>
                                                                             <div className="approve-img-wrapper">
                                                                                 <img src={CheckMark} alt="approve" />
                                                                             </div>
@@ -211,6 +322,12 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
                     </div>
                 </div>
             </div>
+            <ViewKitchenModal isOpen={kitchenModalOpen} onClose={closeKitchenModal} vendorId={vendorDetails?._id || vendor?.id} photos={selectedKitchenPhotos}
+                              onSubmitted={(newCheck) => {
+                                  setKitchenChecks(prev => [newCheck, ...prev]);
+                              }}
+            />
+            <ViewKitchenPhotosOnlyModal isActive={photoModalOpen} onClose={closePhotoOnlyModal} photos={photoModalImages}/>
         </>, modalRoot
     );
 }

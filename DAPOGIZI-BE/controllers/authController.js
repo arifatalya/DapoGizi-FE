@@ -132,4 +132,8 @@ const getVendorMe = async (req, res) => {
   }
 };
 
-module.exports = { signup, login, getVendorMe };
+module.exports = {
+  signup,
+  login,
+  getVendorMe
+};
