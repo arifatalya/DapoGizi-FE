@@ -2,8 +2,8 @@ import {useState, useEffect} from 'react'
 import axios from 'axios'
 import fuzzysort from 'fuzzysort'
 import '../styles/VendorsTable.css'
-import Prev from '../assets/chevron-left.svg'
-import Next from '../assets/chevron-right.svg'
+import Prev from '../assets/prev-page.svg'
+import Next from '../assets/next-page.svg'
 import Search from '../assets/search.svg'
 import Close from '../assets/x.svg'
 
@@ -15,9 +15,9 @@ function VendorsTable({onOpenVendorModal}) {
     const [loading, setLoading] = useState(false);
     const [sortBy, setSortBy] = useState("latest");
     const [page, setPage] = useState(1);
-    const PER_PAGE = 5;
-    const start = (page -1) * PER_PAGE;
-    const end = start + PER_PAGE;
+    const [perPage, setPerPage] = useState(5);
+    const start = (page - 1) * perPage;
+    const end = start + perPage;
 
    useEffect(() =>  {
         const fetchVendors = async () => {
@@ -38,7 +38,8 @@ function VendorsTable({onOpenVendorModal}) {
                 setLoading(false);
             }
         }
-        fetchVendors(); 
+        fetchVendors();
+
     }, [server]);
 
    useEffect(() => {
@@ -70,13 +71,32 @@ function VendorsTable({onOpenVendorModal}) {
    }, [searchQuery, sortBy, vendors]);
 
     const paged = filtered.slice(start, end);
-    const totalPages = Math.ceil(filtered.length / PER_PAGE);
+    const totalPages = Math.ceil(filtered.length / perPage);
+
+    useEffect(() => {
+        setPage(1);
+    }, [perPage]);
+
+    const getVisiblePages = () => {
+        const pages = [];
+
+        if (totalPages <= 5) {
+            for (let i = 1; i <= totalPages; i++) {
+                pages.push(i);
+            }
+            return pages;
+        }
+        if (page <= 3) {
+            return [1, 2, 3, 4, "...", totalPages];
+        }
+        if (page >= totalPages - 2) {
+            return [1, "...", totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+        }
+        return [1, "...", page - 1, page, page + 1, "...", totalPages];
+    }
 
     return (
         <div className="vendors-table-global-wrapper">
-            <div className="vendors-table-header">
-                <h2>Current Registered Vendors</h2>
-            </div>
             <div className="vendors-table-actions">
                 <div className="searchbar-wrapper">
                     <button className="search-button">
@@ -87,15 +107,15 @@ function VendorsTable({onOpenVendorModal}) {
                         value={searchQuery}
                         className="vendors-table-search"
                         placeholder="Search by name, email, or address"
-                        onChange={event => setSearchQuery(event.target.value)}
+                        onChange={(event) => setSearchQuery(event.target.value)}
                     />
-                    {searchQuery.length > 0 && (
-                        <button className="search-clear-button" onClick={(() => setSearchQuery(""))}>
-                            <img src={Close} alt="Clear" title="Clear search input"/>
+                    {searchQuery && (
+                        <button className="search-clear-button" onClick={() => setSearchQuery("")}>
+                            <img src={Close} alt="Clear" />
                         </button>
                     )}
                 </div>
-                <select className="vendors-table-filter" value={sortBy} onChange={((event) => setSortBy(event.target.value))}>
+                <select className="vendors-table-filter" value={sortBy} onChange={(event) => setSortBy(event.target.value)}>
                     <option value="latest">Latest</option>
                     <option value="a-z">A-Z</option>
                     <option value="z-a">Z-A</option>
@@ -104,14 +124,12 @@ function VendorsTable({onOpenVendorModal}) {
             <div className="vendors-table-wrapper">
                 {loading ? (
                     <div className="vendors-table-skeleton">
-                        {Array.from({length: 5}).map((_, index) => (
-                            <div className="vendors-table-skeleton-row" key={index}></div>
+                        {Array.from({ length: 5 }).map((_, index) => (
+                            <div key={index} className="vendors-table-skeleton-row"></div>
                         ))}
                     </div>
                 ) : filtered.length === 0 ? (
-                    <div className="vendors-empty">
-                        <p>No vendors registered within the system.</p>
-                    </div>
+                    <div className="vendors-empty"><p>No vendors found.</p></div>
                 ) : (
                     <table className="vendors-table">
                         <thead>
@@ -119,7 +137,7 @@ function VendorsTable({onOpenVendorModal}) {
                             <th>Vendor Name</th>
                             <th>Email</th>
                             <th>Address</th>
-                            <th className="vendors-table-actions-column">Actions</th>
+                            <th>Actions</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -129,7 +147,7 @@ function VendorsTable({onOpenVendorModal}) {
                                 <td>{vendor.email}</td>
                                 <td>{vendor.address}</td>
                                 <td>
-                                    <button className="view-vendor-button" onClick={((event) => {event.stopPropagation(); onOpenVendorModal(vendor)})}>
+                                    <button className="view-vendor-button" onClick={(event) => {event.stopPropagation();onOpenVendorModal(vendor);}}>
                                         View
                                     </button>
                                 </td>
@@ -138,15 +156,38 @@ function VendorsTable({onOpenVendorModal}) {
                         </tbody>
                     </table>
                 )}
-            </div>
-            <div className="vendors-table-pagination">
-                <button className="previous-button" title="Go to previous page" disabled={page === 1} onClick={(() => setPage((page) => page-1))}>
-                    <img src={Prev} alt="Previous Page" />
-                </button>
-                <span className="page-number">{page} of {totalPages}</span>
-                <button className="next-button" title="Go to next page" disabled={page === totalPages} onClick={(() => setPage((page) => page+1))}>
-                    <img src={Next} alt="Next Page" />
-                </button>
+                <div className="vt-pagination-wrapper">
+                    <div className="vt-pagination">
+                        {page > 1 && (
+                            <button className="vt-prev-button" onClick={() => setPage(page - 1)}>
+                                <img src={Prev} alt="Prev" />
+                            </button>
+                        )}
+                        {getVisiblePages().map((pages, index) =>
+                            pages === "..." ? (
+                                <span key={index} className="vt-ellipsis">…</span>
+                            ) : (
+                                <button key={index} onClick={() => setPage(pages)} className={`vt-page-number ${pages === page ? "active" : ""}`}>
+                                    {pages}
+                                </button>
+                            )
+                        )}
+                        {page < totalPages && (
+                            <button className="vt-next-button" onClick={() => setPage(page + 1)}>
+                                <img src={Next} alt="Next" />
+                            </button>
+                        )}
+                    </div>
+                    <div className="vt-per-page">
+                        <span>Show per page:</span>
+                        <select value={perPage} onChange={(e) => setPerPage(Number(e.target.value))}>
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={15}>15</option>
+                            <option value={20}>20</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
     );

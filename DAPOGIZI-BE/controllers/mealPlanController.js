@@ -2,6 +2,7 @@ const Vendor = require("../models/vendorSchema");
 const MealPlan = require("../models/mealPlanSchema");
 const MealDetail = require("../models/mealDetailSchema");
 const {uploadToSupabase} = require("../utils/supabaseUpload");
+const {getFoodPredictionAndNutrition} = require("../services/mealAIService");
 
 async function ensureVendor(req) {
   const userId = req.user._id;
@@ -15,14 +16,16 @@ const createMealPlan = async (req, res) => {
     if (!vendor) return res.status(404).json({ message: "Vendor not found" });
 
     const { name, description } = req.body || {};
-    if (!name) return res.status(400).json({ message: "name is required" });
+    if (!name) return res.status(400).json({ message: "Name is required" });
 
+    // Handle image upload and save the URL to Supabase
     let image_url = null;
     const imageFile = req.file;
     if (imageFile) {
       image_url = await uploadToSupabase(imageFile.buffer, "meals", imageFile.originalname);
     }
 
+    // Create the meal plan
     const plan = new MealPlan({
       vendor_id: vendor._id,
       name,
@@ -32,7 +35,27 @@ const createMealPlan = async (req, res) => {
     });
     await plan.save();
 
-    return res.status(201).json({ message: "MealPlan created", mealPlan: plan });
+    // Get prediction and nutrition details from the image URL
+    const nutritionData = await getFoodPredictionAndNutrition(plan.image_url);
+
+    // Save nutrition data into the meal details
+    const mealDetail = new MealDetail({
+      meal_id: plan._id,
+      overall_calories: nutritionData.nutrition[0]["Calories (kcal)"],
+      protein: nutritionData.nutrition[0]["Proteins (g)"],
+      fat: nutritionData.nutrition[0]["Fat (g)"],
+      carbs: nutritionData.nutrition[0]["Carbohydrate (g)"],
+      sugar: nutritionData.nutrition[0]["Sugars (g)"],
+      fiber: nutritionData.nutrition[0]["Fibers (g)"],
+    });
+    await mealDetail.save();
+
+    // Return the response with both meal plan and nutrition data
+    return res.status(201).json({
+      message: "MealPlan created",
+      mealPlan: plan,
+      nutrition: nutritionData.nutrition,
+    });
   } catch (err) {
     console.error("createMealPlan error:", err);
     return res.status(500).json({ message: "Server error" });
@@ -51,6 +74,7 @@ const updateMealPlan = async (req, res) => {
       return res.status(403).json({ message: "You do not own this meal plan" });
     }
 
+    // Handle the fields to update
     const {
       name,
       description,
@@ -65,6 +89,7 @@ const updateMealPlan = async (req, res) => {
     if (name != null) plan.name = name;
     if (description != null) plan.description = description;
 
+    // Handle image upload and update the URL to Supabase
     const imageFile = req.file;
     if (imageFile) {
       plan.image_url = await uploadToSupabase(imageFile.buffer, "meals", imageFile.originalname);
@@ -72,7 +97,7 @@ const updateMealPlan = async (req, res) => {
 
     await plan.save();
 
-    // Upsert meal detail
+    // Update or insert meal details
     const detail = await MealDetail.findOne({ meal_id: plan._id });
     const toNum = (v) => (v == null ? undefined : Number(v));
 
@@ -86,11 +111,13 @@ const updateMealPlan = async (req, res) => {
     };
 
     if (detail) {
+      // Update existing meal details
       Object.keys(detailData).forEach((k) => {
         if (detailData[k] != null) detail[k] = detailData[k];
       });
       await detail.save();
     } else {
+      // If no detail exists, create a new one
       const anyProvided = Object.values(detailData).some((v) => v != null);
       if (anyProvided) {
         const newDetail = new MealDetail({
@@ -101,14 +128,9 @@ const updateMealPlan = async (req, res) => {
       }
     }
 
-    // Return both plan + detail
+    // Return the updated plan and meal detail
     const outDetail = await MealDetail.findOne({ meal_id: plan._id });
-    return res.json({
-      message: "MealPlan updated",
-      mealPlan: plan,
-      detail: outDetail
-    });
-
+    return res.json({ message: "MealPlan updated", mealPlan: plan, detail: outDetail });
   } catch (err) {
     console.error("updateMealPlan error:", err);
     return res.status(500).json({ message: "Server error" });

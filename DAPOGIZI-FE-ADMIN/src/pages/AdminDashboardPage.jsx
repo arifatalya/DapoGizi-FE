@@ -1,6 +1,9 @@
+import {useState} from 'react'
+import '../styles/AdminDashboardPage.css'
 import VendorsTable from '../components/VendorsTable'
 import VendorDetailsModal from '../components/VendorDetailsModal.jsx'
-import {useState} from 'react'
+import VendorsOverviewCards from '../components/VendorsOverviewCards.jsx'
+import ActivityTimeline from '../components/ActivityTimeline.jsx'
 
 function AdminDashboardPage() {
     const [selectedVendor, setSelectedVendor] = useState(null);
@@ -16,11 +19,24 @@ function AdminDashboardPage() {
     }
 
     return (
-        <>
-            <VendorsTable onOpenVendorModal={handleOpenVendorDetails} />
-            <VendorDetailsModal vendor={selectedVendor} isOpen={isVendorDetailsOpen} onClose={handleCloseVendorDetails} />
-        </>
-    )
+        <div className="dashboard-container">
+            <VendorsOverviewCards />
+            <div className="dashboard-grid">
+                <div className="dashboard-left">
+                    <ActivityTimeline />
+                </div>
+
+                <div className="dashboard-right">
+                    <VendorsTable onOpenVendorModal={handleOpenVendorDetails} />
+                </div>
+            </div>
+            <VendorDetailsModal
+                vendor={selectedVendor}
+                isOpen={!!selectedVendor}
+                onClose={() => setSelectedVendor(null)}
+            />
+        </div>
+    );
 }
 
 export default AdminDashboardPage;

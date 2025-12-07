@@ -63,10 +63,6 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
                 const filteredMealPlans = allMealPlans.filter((meal) => meal.vendor_name === vendor.vendor_name);
                 setMealPlans(filteredMealPlans);
 
-                // const allMealPlans = mealPlansRes.data?.data || [];
-                // const filteredMealPlans = allMealPlans.filter((meal) => meal.vendor_name === vendor.vendor_name);
-                // setMealPlans(filteredMealPlans);
-
             } catch (err) {
                 console.log("Failed to load vendor details:", err);
 
@@ -179,11 +175,7 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
             });
 
             setMealPlans(prev =>
-                prev.map(meal =>
-                    ids.includes(meal.id)
-                        ? { ...meal, status: "approved" }
-                        : meal
-                )
+                prev.map(meal => ids.includes(meal.id) ? {...meal, status: "approved"} : meal)
             );
             setSelectedMealPlans([]);
             setIsSelectAll(false);
@@ -201,11 +193,7 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
             });
 
             setMealPlans(prev =>
-                prev.map(meal =>
-                    ids.includes(meal.id)
-                        ? { ...meal, status: "rejected" }
-                        : meal
-                )
+                prev.map(meal => ids.includes(meal.id) ? {...meal, status: "rejected"} : meal)
             );
             setSelectedMealPlans([]);
             setIsSelectAll(false);
@@ -263,6 +251,9 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
                         ) : (
                             <>
                                 <div className="vendor-identity">
+                                    <div className="vendor-name-label">
+                                        <h3>Vendor Name</h3>
+                                    </div>
                                     <h2>{vendorDetails?.vendor_name || vendor.vendor_name}</h2>
                                     <div className="vendor-target-label">
                                         <h3>Target Schools</h3>
