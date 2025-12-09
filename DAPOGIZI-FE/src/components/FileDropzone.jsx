@@ -4,8 +4,9 @@ import '../styles/FileDropzone.css'
 import Upload from '../assets/upload.svg'
 import Load from '../assets/download.svg'
 
-const FileDropzone = ({label, note, photos, setPhotos, inputId, error}) => {
+const FileDropzone = ({label, note, photos, setPhotos, inputId, error, onInvalidFile}) => {
     const [isDragging, setIsDragging] = useState(false);
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
 
     const mergePhotos = (prev, incoming) => {
         const map = new Map();
@@ -15,8 +16,26 @@ const FileDropzone = ({label, note, photos, setPhotos, inputId, error}) => {
 
     const handleSelectPhoto = (event) => {
         const selected = Array.from(event.target.files || []);
-        setPhotos((prev) => mergePhotos(prev, selected));
-        event.target.value = '';
+
+        const validFiles = [];
+        let hasInvalid = false;
+
+        selected.forEach(file => {
+            if (allowedTypes.includes(file.type)) {
+                validFiles.push(file);
+            } else {
+                hasInvalid = true;
+            }
+        });
+
+        if (hasInvalid && onInvalidFile) {
+            onInvalidFile("Please upload only .jpeg, .jpg, or .png images");
+        }
+
+        if (validFiles.length > 0) {
+            setPhotos(prev => mergePhotos(prev, validFiles));
+        }
+        event.target.value = "";
     };
 
     const handleDragOver = (event) => {
@@ -36,12 +55,25 @@ const FileDropzone = ({label, note, photos, setPhotos, inputId, error}) => {
         event.stopPropagation();
         setIsDragging(false);
 
-        const files = Array.from(event.dataTransfer.files).filter(
-            file => file.type.startsWith('image/')
-        );
+        const dropped = Array.from(event.dataTransfer.files);
 
-        if (files.length > 0) {
-            setPhotos((prev) => mergePhotos(prev, files));
+        const validFiles = [];
+        let hasInvalid = false;
+
+        dropped.forEach(file => {
+            if (allowedTypes.includes(file.type)) {
+                validFiles.push(file);
+            } else {
+                hasInvalid = true;
+            }
+        });
+
+        if (hasInvalid && onInvalidFile) {
+            onInvalidFile("Please upload only .jpeg, .jpg, or .png images");
+        }
+
+        if (validFiles.length > 0) {
+            setPhotos(prev => mergePhotos(prev, validFiles));
         }
     };
 

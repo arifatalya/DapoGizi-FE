@@ -65,13 +65,136 @@ const getMySubmissions = async (req, res) => {
   }
 };
 
+// const updateProfile = async (req, res) => {
+//   try {
+//     const userId = req.user._id;
+//     console.log("Updating profile for user:", userId);
+//
+//     const vendor = await Vendor.findOne({ user_id: userId });
+//     if (!vendor) return res.status(404).json({ message: "Vendor not found" });
+//
+//     let {
+//       vendor_name,
+//       address,
+//       operating_days,
+//       location,
+//       skip_geo,
+//       target_schools,
+//       skip_auto_schools,
+//     } = req.body || {};
+//
+//     console.log("Raw request body:", req.body); // Log incoming data
+//
+//     // Parse operating_days if it's a stringified JSON array (because form-data sends as string)
+//     if (typeof operating_days === "string") {
+//       try {
+//         operating_days = JSON.parse(operating_days);
+//       } catch (err) {
+//         console.warn("Failed to parse operating_days from string, ignoring it.");
+//         operating_days = undefined;
+//       }
+//     }
+//
+//     // Parse target_schools if sent as string (form-data)
+//     if (typeof target_schools === "string") {
+//       try {
+//         target_schools = JSON.parse(target_schools);
+//       } catch (err) {
+//         console.warn("Failed to parse target_schools from string, ignoring it.");
+//         target_schools = undefined;
+//       }
+//     }
+//
+//     // Update simple fields if provided
+//     if (vendor_name != null) vendor.vendor_name = vendor_name;
+//     if (address != null) vendor.address = address;
+//     if (Array.isArray(operating_days)) vendor.operating_days = operating_days;
+//
+//     // Geocoding and location logic
+//     let bias = null;
+//     const wantSkipGeo = String(skip_geo || "").toLowerCase() === "true";
+//     const wantSkipAutoSchools = String(skip_auto_schools || "").toLowerCase() === "true";
+//
+//     if (location && location.lat != null && location.lon != null) {
+//       vendor.location = {
+//         type: "Point",
+//         coordinates: [Number(location.lon), Number(location.lat)],
+//       };
+//       bias = { lon: Number(location.lon), lat: Number(location.lat) };
+//     } else if (!wantSkipGeo && address) {
+//       const geo = await geocodeAddress(address);
+//       console.log("Geocode result:", geo); // Log geocode response
+//       if (geo && geo.lon != null && geo.lat != null) {
+//         vendor.location = { type: "Point", coordinates: [geo.lon, geo.lat] };
+//         bias = { lon: geo.lon, lat: geo.lat };
+//       }
+//     } else if (vendor.location?.coordinates?.length === 2) {
+//       bias = {
+//         lon: vendor.location.coordinates[0],
+//         lat: vendor.location.coordinates[1],
+//       };
+//     }
+//
+//     // Handle manual target_schools from client
+//     let manualTargetSchoolsProvided = false;
+//     if (Array.isArray(target_schools) && target_schools.length > 0) {
+//       manualTargetSchoolsProvided = true;
+//
+//       vendor.target_schools = target_schools.map((s) => {
+//         const safe = {
+//           name: s.name,
+//           address: s.address || "",
+//           geoapify_id: s.geoapify_id || "",
+//         };
+//
+//         // Optional: accept provided coordinates if any
+//         if (s.location && Array.isArray(s.location.coordinates)) {
+//           const lon = Number(s.location.coordinates[0]);
+//           const lat = Number(s.location.coordinates[1]);
+//           if (!Number.isNaN(lon) && !Number.isNaN(lat)) {
+//             safe.location = {
+//               type: "Point",
+//               coordinates: [lon, lat],
+//             };
+//           }
+//         }
+//
+//         return safe;
+//       });
+//     }
+//
+//     // Only auto-fill target_schools from Geoapify if:
+//     // - We have a bias (location),
+//     // - The client did NOT provide manual target_schools,
+//     // - And skip_auto_schools is NOT true
+//     if (bias && !manualTargetSchoolsProvided && !wantSkipAutoSchools) {
+//       const schools = await findNearbySchools(bias, 3);
+//       console.log("Nearby schools:", schools); // Log nearby schools
+//       vendor.target_schools = schools;
+//     }
+//
+//     // Save the updated vendor document
+//     console.log("Vendor to be saved:", vendor);
+//     await vendor.save();
+//
+//     return res.json({ message: "Vendor updated", vendor });
+//   } catch (err) {
+//     console.error("updateProfile error:", err);
+//     return res.status(500).json({ message: "Server error" });
+//   }
+// };
+
 const updateProfile = async (req, res) => {
   try {
     const userId = req.user._id;
     console.log("Updating profile for user:", userId);
 
     const vendor = await Vendor.findOne({ user_id: userId });
-    if (!vendor) return res.status(404).json({ message: "Vendor not found" });
+    if (!vendor) {
+      return res.status(404).json({
+        message: "Vendor not found"
+      });
+    }
 
     let {
       vendor_name,
@@ -80,37 +203,71 @@ const updateProfile = async (req, res) => {
       location,
       skip_geo,
       target_schools,
-      skip_auto_schools,
+      skip_auto_schools
     } = req.body || {};
 
-    console.log("Raw request body:", req.body); // Log incoming data
-
-    // Parse operating_days if it's a stringified JSON array (because form-data sends as string)
     if (typeof operating_days === "string") {
       try {
         operating_days = JSON.parse(operating_days);
-      } catch (err) {
-        console.warn("Failed to parse operating_days from string, ignoring it.");
+      } catch {
         operating_days = undefined;
       }
     }
 
-    // Parse target_schools if sent as string (form-data)
     if (typeof target_schools === "string") {
       try {
         target_schools = JSON.parse(target_schools);
-      } catch (err) {
-        console.warn("Failed to parse target_schools from string, ignoring it.");
+      } catch {
         target_schools = undefined;
       }
     }
 
-    // Update simple fields if provided
-    if (vendor_name != null) vendor.vendor_name = vendor_name;
-    if (address != null) vendor.address = address;
-    if (Array.isArray(operating_days)) vendor.operating_days = operating_days;
+    if (vendor_name != null) {
+      vendor.vendor_name = vendor_name;
+    }
+    if (Array.isArray(operating_days)) {
+      vendor.operating_days = operating_days;
+    }
 
-    // Geocoding and location logic
+    if (address && typeof address === "string") {
+      try {
+        address = JSON.parse(address);
+      } catch {
+        return res.status(400).json({
+          message: "Invalid address format"
+        });
+      }
+    }
+
+    if (address && typeof address === "object") {
+      const {
+        address_line_1 = "",
+        address_line_2 = "",
+        district = "",
+        city = "",
+        province = "",
+        postal_code = ""
+      } = address;
+
+      vendor.address.address_line_1 = address_line_1;
+      vendor.address.address_line_2 = address_line_2;
+      vendor.address.district = district;
+      vendor.address.city = city;
+      vendor.address.province = province;
+      vendor.address.postal_code = postal_code;
+
+      const parts = [
+        address_line_1,
+        address_line_2,
+        district,
+        city,
+        province,
+        postal_code
+      ].filter(Boolean);
+
+      vendor.address.full_address = parts.join(", ");
+    }
+
     let bias = null;
     const wantSkipGeo = String(skip_geo || "").toLowerCase() === "true";
     const wantSkipAutoSchools = String(skip_auto_schools || "").toLowerCase() === "true";
@@ -121,22 +278,28 @@ const updateProfile = async (req, res) => {
         coordinates: [Number(location.lon), Number(location.lat)],
       };
       bias = { lon: Number(location.lon), lat: Number(location.lat) };
-    } else if (!wantSkipGeo && address) {
-      const geo = await geocodeAddress(address);
-      console.log("Geocode result:", geo); // Log geocode response
+
+    } else if (!wantSkipGeo && vendor.address.full_address) {
+      const geo = await geocodeAddress(vendor.address.full_address);
+      console.log("Geocode result:", geo);
+
       if (geo && geo.lon != null && geo.lat != null) {
-        vendor.location = { type: "Point", coordinates: [geo.lon, geo.lat] };
+        vendor.location = {
+          type: "Point",
+          coordinates: [geo.lon, geo.lat],
+        };
         bias = { lon: geo.lon, lat: geo.lat };
       }
+
     } else if (vendor.location?.coordinates?.length === 2) {
       bias = {
         lon: vendor.location.coordinates[0],
-        lat: vendor.location.coordinates[1],
+        lat: vendor.location.coordinates[1]
       };
     }
 
-    // Handle manual target_schools from client
     let manualTargetSchoolsProvided = false;
+
     if (Array.isArray(target_schools) && target_schools.length > 0) {
       manualTargetSchoolsProvided = true;
 
@@ -144,18 +307,14 @@ const updateProfile = async (req, res) => {
         const safe = {
           name: s.name,
           address: s.address || "",
-          geoapify_id: s.geoapify_id || "",
+          geoapify_id: s.geoapify_id || ""
         };
 
-        // Optional: accept provided coordinates if any
-        if (s.location && Array.isArray(s.location.coordinates)) {
+        if (s.location?.coordinates?.length === 2) {
           const lon = Number(s.location.coordinates[0]);
           const lat = Number(s.location.coordinates[1]);
           if (!Number.isNaN(lon) && !Number.isNaN(lat)) {
-            safe.location = {
-              type: "Point",
-              coordinates: [lon, lat],
-            };
+            safe.location = { type: "Point", coordinates: [lon, lat] };
           }
         }
 
@@ -163,24 +322,23 @@ const updateProfile = async (req, res) => {
       });
     }
 
-    // Only auto-fill target_schools from Geoapify if:
-    // - We have a bias (location),
-    // - The client did NOT provide manual target_schools,
-    // - And skip_auto_schools is NOT true
     if (bias && !manualTargetSchoolsProvided && !wantSkipAutoSchools) {
       const schools = await findNearbySchools(bias, 3);
-      console.log("Nearby schools:", schools); // Log nearby schools
       vendor.target_schools = schools;
     }
 
-    // Save the updated vendor document
-    console.log("Vendor to be saved:", vendor);
     await vendor.save();
 
-    return res.json({ message: "Vendor updated", vendor });
+    return res.json({
+      message: "Vendor updated",
+      vendor
+    });
+
   } catch (err) {
     console.error("updateProfile error:", err);
-    return res.status(500).json({ message: "Server error" });
+    return res.status(500).json({
+      message: "Server error"
+    });
   }
 };
 
@@ -196,16 +354,13 @@ const updateKitchenPhotos = async (req, res) => {
     }
 
     const filenames = files.map((f) => f.originalname.toLowerCase());
-    const hasDuplicate = filenames.some(
-        (name, idx) => filenames.indexOf(name) !== idx
-    );
-
+    const hasDuplicate = filenames.some((name, idx) => filenames.indexOf(name) !== idx);
     if (hasDuplicate) {
       return res.status(400).json({
-        message:
-            "Duplicate filenames detected. Please rename your files before uploading.",
+        message: "Duplicate filenames detected. Please rename your files before uploading.",
       });
     }
+
     const uploadPromises = files.map((file) =>
         uploadToSupabase(file.buffer, "kitchens", file.originalname)
     );
@@ -218,44 +373,45 @@ const updateKitchenPhotos = async (req, res) => {
 
     await vendor.save();
 
-    let aiResult = null;
+    const aiResults = [];
 
-    if (supabaseUrls.length > 0) {
-      const lastFileUrl = supabaseUrls[supabaseUrls.length - 1];
-      const lastFile = files[files.length - 1];
+    for (let i = 0; i < supabaseUrls.length; i++) {
+      const fileUrl = supabaseUrls[i];
+      const file = files[i];
 
       try {
-        const imageBuffer = await downloadFromSupabase(lastFileUrl);
+        const buffer = await downloadFromSupabase(fileUrl);
 
-        const aiData = await analyzeKitchenImage(
-            imageBuffer,
-            lastFile.originalname
-        );
+        const aiData = await analyzeKitchenImage(buffer, file.originalname);
         const status = determineKitchenStatus(aiData.prediction);
 
         const kitchenCheck = await KitchenCheck.create({
           vendor_id: vendor._id,
           score: aiData.confidence,
-          status: status,
+          status,
           notes: req.body.notes || "",
+          kitchen_photos: [fileUrl],
           checked_by: req.user._id,
           check_date: new Date(),
         });
 
-        aiResult = {
-          score: kitchenCheck.score,
+        aiResults.push({
+          file: file.originalname,
+          url: fileUrl,
           status: kitchenCheck.status,
-        };
-      } catch (e) {
-        console.error("Analysis AI error:", e.message);
+          score: kitchenCheck.score,
+        });
+      } catch (err) {
+        console.error("AI analysis failed for", file.originalname, err);
       }
     }
 
     return res.json({
       message: "Kitchen photos updated",
       kitchen_photos: vendor.kitchen_photos,
-      kitchen_check: aiResult,
+      kitchen_check: aiResults,
     });
+
   } catch (e) {
     console.error("updateKitchenPhotos failed:", e);
     return res.status(500).json({ message: "Server error" });
@@ -299,7 +455,7 @@ const getMyKitchenChecks = async (req, res) => {
       score: check.score,
       status: check.status,
       notes: check.notes || "",
-      photo_urls: check.photo_urls || [],
+      kitchen_photos: check.kitchen_photos || [],
       checked_by: check.checked_by?.email || null,
     }));
 

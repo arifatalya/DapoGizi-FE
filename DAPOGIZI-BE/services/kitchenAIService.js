@@ -1,6 +1,10 @@
 const axios = require("axios");
 const FormData = require("form-data");
+const dotenv = require("dotenv");
 
+dotenv.config();
+
+const kitchenAIModelUrl = process.env.KITCHEN_AI_MODEL;
 
 async function analyzeKitchenImage(imageBuffer, originalname) {
     const filename = originalname;
@@ -8,14 +12,13 @@ async function analyzeKitchenImage(imageBuffer, originalname) {
     formData.append("file", imageBuffer, filename);
 
     const response = await axios.post(
-        "https://leemto-kitchen-cleanliness-api.hf.space/predict",
+        kitchenAIModelUrl,
         formData,
         {
             headers: formData.getHeaders(),
             timeout: 10000,
         }
     );
-
     return response.data;
 }
 

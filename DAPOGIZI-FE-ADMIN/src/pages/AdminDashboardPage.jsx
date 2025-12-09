@@ -20,21 +20,17 @@ function AdminDashboardPage() {
 
     return (
         <div className="dashboard-container">
+            <h2 className="dashboard-label">Dashboard</h2>
             <VendorsOverviewCards />
             <div className="dashboard-grid">
                 <div className="dashboard-left">
                     <ActivityTimeline />
                 </div>
-
                 <div className="dashboard-right">
                     <VendorsTable onOpenVendorModal={handleOpenVendorDetails} />
                 </div>
             </div>
-            <VendorDetailsModal
-                vendor={selectedVendor}
-                isOpen={!!selectedVendor}
-                onClose={() => setSelectedVendor(null)}
-            />
+            <VendorDetailsModal vendor={selectedVendor} isOpen={!!selectedVendor} onClose={() => setSelectedVendor(null)}/>
         </div>
     );
 }

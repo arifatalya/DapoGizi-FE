@@ -1,20 +1,31 @@
+import {useState} from 'react'
+import '../styles/VendorHomePage.css'
 import HomeNavbar from '../components/HomeNavbar.jsx'
 import QuickAccessCard from '../components/QuickAccessCard.jsx'
 import Sidebar from '../components/Sidebar.jsx'
 import MealPlanModal from '../components/MealPlanModal.jsx'
+import ToastProvider from '../components/ToastProvider.jsx'
 import Guidelines from '../assets/guideline.png'
 import MealPlan from '../assets/mealplan.png'
 import Feedbacks from '../assets/feedback.png'
-import '../styles/VendorHomePage.css'
-import {useState} from "react";
 
 function VendorHomePage() {
     const [mealPlanModalOpen, setMealPlanModalOpen] = useState(false);
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState("");
+    const [toastType, setToastType] = useState("default");
     const selectedPlan = null;
     const refreshList = () => {};
 
+    const renderToast = (message, type= "default") => {
+        setToastType(type);
+        setToastMessage(message);
+        setShowToast(true);
+    }
+
     return (
         <>
+            <ToastProvider message={toastMessage} type={toastType} duration={5000} show={showToast} onClose={setShowToast} />
             <div className="homepage-wrapper">
                 <HomeNavbar />
                 <div className="homepage-qa-wrapper">
@@ -39,7 +50,7 @@ function VendorHomePage() {
                     />
                 </div>
                 <Sidebar isMealModalOpen={mealPlanModalOpen} openMealModal={() => setMealPlanModalOpen(true)}/>
-                <MealPlanModal isOpen={mealPlanModalOpen} onClose={() => setMealPlanModalOpen(false)} plan={selectedPlan} refreshList={refreshList} />
+                <MealPlanModal isOpen={mealPlanModalOpen} onClose={() => setMealPlanModalOpen(false)} plan={selectedPlan} refreshList={refreshList} renderToast={renderToast} />
             </div>
         </>
     );

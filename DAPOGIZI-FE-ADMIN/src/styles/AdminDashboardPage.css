@@ -1,7 +1,12 @@
 .dashboard-container {
     max-width: 100%;
     margin: 0 auto;
-    padding: 24px 32px;
+    padding: 40px 70px;
+}
+
+.dashboard-label {
+    font-size: 30px;
+    font-weight: bold;
 }
 
 .dashboard-grid {

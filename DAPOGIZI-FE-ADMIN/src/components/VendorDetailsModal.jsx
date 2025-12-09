@@ -137,36 +137,6 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
         }
     };
 
-    // const handleApproveMealPlan = async (ids) => {
-    //     try {
-    //         const token = localStorage.getItem("token");
-    //         await axios.patch(`${server}/admin/meal-plans/approve`, {ids}, {
-    //             headers: {Authorization: `Bearer ${token}`}
-    //         });
-    //         setMealPlans(prev => prev.map(meal => ids.includes(meal.id) ? {...meal, meal_plan: {...meal, status: "approved"}} : meal));
-    //         setSelectedMealPlans([]);
-    //         setIsSelectAll(false);
-    //
-    //     } catch (err) {
-    //         console.error("Error approving meal plans:", err);
-    //     }
-    // };
-    //
-    // const handleRejectMealPlan = async (ids) => {
-    //     try {
-    //         const token = localStorage.getItem("token");
-    //         await axios.patch(`${server}/admin/meal-plans/reject`, {ids}, {
-    //             headers: {Authorization: `Bearer ${token}`}
-    //         });
-    //         setMealPlans(prev => prev.map(meal => ids.includes(meal.id) ? {...meal, meal_plan: {...meal, status: "rejected"}} : meal));
-    //         setSelectedMealPlans([]);
-    //         setIsSelectAll(false);
-    //
-    //     } catch (err) {
-    //         console.error("Error rejecting meal plans:", err);
-    //     }
-    // };
-
     const handleApproveMealPlan = async (ids) => {
         try {
             const token = localStorage.getItem("token");
@@ -228,6 +198,16 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
         setPhotoModalImages([]);
     };
 
+    const getAddressDisplay = (address) => {
+        if (!address) {
+            return
+        }
+        if (typeof address === "string") {
+            return address;
+        }
+        return address.address_line_1 || address.full_address || address.address_line_2 || `${address.district || ""} ${address.city || ""}`.trim() || "";
+    };
+
 
     return createPortal(
         <>
@@ -279,7 +259,9 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
                                         </div>
                                         <div className="vendor-info-block">
                                             <p className="vendor-details-label">Address</p>
-                                            <p className="vendor-info-value">{vendorDetails?.address || vendor.address}</p>
+                                            <p className="vendor-info-value">
+                                                {getAddressDisplay(vendorDetails?.address || vendor.address)}
+                                            </p>
                                         </div>
                                     </div>
                                 </div>

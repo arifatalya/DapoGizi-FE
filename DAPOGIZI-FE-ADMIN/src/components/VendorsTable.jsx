@@ -93,7 +93,17 @@ function VendorsTable({onOpenVendorModal}) {
             return [1, "...", totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
         }
         return [1, "...", page - 1, page, page + 1, "...", totalPages];
-    }
+    };
+
+    const getAddressDisplay = (address) => {
+        if (!address) {
+            return
+        }
+        if (typeof address === "string") {
+            return address;
+        }
+        return address.address_line_1 || address.full_address || "";
+    };
 
     return (
         <div className="vendors-table-global-wrapper">
@@ -134,6 +144,8 @@ function VendorsTable({onOpenVendorModal}) {
                     <table className="vendors-table">
                         <thead>
                         <tr>
+                            <th>No.</th>
+                            <th>Province</th>
                             <th>Vendor Name</th>
                             <th>Email</th>
                             <th>Address</th>
@@ -141,11 +153,17 @@ function VendorsTable({onOpenVendorModal}) {
                         </tr>
                         </thead>
                         <tbody>
-                        {paged.map((vendor) => (
+                        {paged.map((vendor, index) => (
                             <tr key={vendor.id} className="clickable-vendor-row" onClick={() => onOpenVendorModal(vendor)}>
+                                <td>{start + index + 1}</td>
+                                <td>
+                                    <span className={"province-badge " + (vendor.address?.province ? "province-" + vendor.address.province.replace(/\s+/g, "").toLowerCase() : "province-unknown")}>
+                                        {vendor.address?.province || "Unknown"}
+                                    </span>
+                                </td>
                                 <td>{vendor.vendor_name}</td>
                                 <td>{vendor.email}</td>
-                                <td>{vendor.address}</td>
+                                <td>{getAddressDisplay(vendor.address)}</td>
                                 <td>
                                     <button className="view-vendor-button" onClick={(event) => {event.stopPropagation();onOpenVendorModal(vendor);}}>
                                         View

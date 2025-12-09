@@ -1,17 +1,13 @@
-// services/mealAIService.js
-
 const axios = require('axios');
 const FormData = require('form-data');
-const fs = require('fs');
+const dotenv = require('dotenv');
 
-/**
- * Sends the image to the food detection API and returns the prediction and nutrition data.
- * @param {string} imageUrl - The URL of the image to be analyzed.
- * @returns {Promise<object>} - The response object containing the prediction and nutrition details.
- */
+dotenv.config();
+
+const mealAIModelUrl = process.env.MEAL_AI_MODEL;
+
 const getFoodPredictionAndNutrition = async (imageUrl) => {
     try {
-        // Fetch the image from the URL
         const response = await axios.get(imageUrl, { responseType: 'stream' });
         const form = new FormData();
         form.append('file', response.data, {
@@ -19,8 +15,7 @@ const getFoodPredictionAndNutrition = async (imageUrl) => {
             contentType: 'image/jpeg',
         });
 
-        // Send the image to the food detection service
-        const foodPredictionResponse = await axios.post('https://weewrwr-indonesian-food-detection-despro.hf.space/predict', form, {
+        const foodPredictionResponse = await axios.post(mealAIModelUrl, form, {
             headers: {
                 ...form.getHeaders(),
             },

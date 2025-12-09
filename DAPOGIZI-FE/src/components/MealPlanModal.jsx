@@ -6,35 +6,40 @@ import Close from '../assets/x.svg'
 import CollapsibleForm from './CollapsibleForm.jsx'
 import FileDropzone from './FileDropzone.jsx'
 
-function MealPlanModal({isOpen, onClose, plan, refreshList}) {
+function MealPlanModal({isOpen, onClose, plan, refreshList, renderToast}) {
     const modalRoot = document.getElementById("modal-root");
     const server = `${import.meta.env.VITE_API_URL}`;
     const isEditing = Boolean(plan);
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [photos, setPhotos] = useState([]);
-    const [overallKcal, setOverallKcal] = useState("");
-    const [protein, setProtein] = useState("");
-    const [fat, setFat] = useState("");
-    const [carbs, setCarbs] = useState("");
-    const [sugar, setSugar] = useState("");
-    const [fiber, setFiber] = useState("");
+    // const [overallKcal, setOverallKcal] = useState("");
+    // const [protein, setProtein] = useState("");
+    // const [fat, setFat] = useState("");
+    // const [carbs, setCarbs] = useState("");
+    // const [sugar, setSugar] = useState("");
+    // const [fiber, setFiber] = useState("");
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
+    const [submitted, setSubmitted] = useState(false);
 
     useEffect(() => {
          if (!isEditing || !plan) return;
          setName(plan.name || "");
          setDescription(plan.description || "");
-         if (plan.detail) {
-             setOverallKcal(plan.detail.overall_calories || "");
-             setProtein(plan.protein || "");
-             setFat(plan.fat || "");
-             setCarbs(plan.carbs || "");
-             setSugar(plan.sugar || "");
-             setFiber(plan.fiber || "");
-         }
-    }, [plan]);
+         setPhotos([]);
+    }, [isEditing, plan]);
+
+    useEffect(() => {
+        if (!isOpen) {
+            setName("");
+            setDescription("");
+            setPhotos([]);
+            setSubmitted(false);
+            setMessage("");
+            setLoading(false);
+        }
+    }, [isOpen]);
 
     if (!isOpen) {
         return null;
@@ -43,10 +48,12 @@ function MealPlanModal({isOpen, onClose, plan, refreshList}) {
     const handleAddMealPlan = async (event) => {
         event.preventDefault();
         setLoading(true);
+        setSubmitted(true);
         setMessage("");
 
         if (!isEditing && photos.length === 0) {
             setMessage("Meal photo is required.");
+            renderToast?.("Please upload a photo of the meal", "default");
             setLoading(false);
             return;
         }
@@ -54,32 +61,31 @@ function MealPlanModal({isOpen, onClose, plan, refreshList}) {
         try {
             const token = localStorage.getItem("token");
             const form = new FormData();
+
             form.append("name", name);
             form.append("description", description);
-            if (plan.detail) {
-                form.append("overall_calories", overallKcal);
-                form.append("protein", protein);
-                form.append("fat", fat);
-                form.append("carbs", carbs);
-                form.append("sugar", sugar);
-                form.append("fiber", fiber);
-            }
+
             if (photos.length > 0) {
-                form.append("photos", photos[0]);
+                form.append("image", photos[0]);
             }
 
-            const url = isEditing ? `${server}/vendor/ops/meal-plans/${plan._id}` : `${server}/vendor/ops/meal-plans`;
-            const method = isEditing ? "PUT" : "POST";
-            const response = await axios[method](url, form, {
-                headers: {Authorization: `Bearer ${token}`}
-            });
+            const url = isEditing
+                ? `${server}/vendor/ops/meal-plans/${plan._id}`
+                : `${server}/vendor/ops/meal-plans`;
+
+            const response = isEditing
+                ? await axios.put(url, form, {headers: {Authorization: `Bearer ${token}`}})
+                : await axios.post(url, form, {headers: {Authorization: `Bearer ${token}`}});
+
             if (response.data?.message) {
                 refreshList();
                 onClose();
+                return;
             }
+
         } catch (err) {
             console.error(err);
-            setMessage(err.response.data.message || "Failed to add meal plan.");
+            setMessage(err.response?.data?.message || "Failed to add meal plan.");
         } finally {
             setLoading(false);
         }
@@ -118,106 +124,15 @@ function MealPlanModal({isOpen, onClose, plan, refreshList}) {
                         </div>
                         <FileDropzone
                             label="Meal Photo"
-                            note="Upload at least one clear photo of the meal."
+                            note="Supported file format: .jpeg, .jpg, .png"
                             photos={photos}
                             setPhotos={setPhotos}
                             inputId="meal-image-upload"
-                            error={!isEditing && photos.length === 0 ? "Meal photo is required" : ""}
+                            error={submitted && !isEditing && photos.length === 0 ? "Meal photo is required" : ""}
+                            onInvalidFile={(invalidFileMessage) => renderToast(invalidFileMessage, "error")}
                         />
-                        <CollapsibleForm
-                            title="Meal Nutritions Details"
-                            subtitle="Kcal and Macronutrients Info (optional)"
-                            defaultExpanded={true}
-                        >
-                            <div className="nutrition-grid">
-                                <div className="nutrition-field">
-                                    <label>Overall Calories (Kcal)</label>
-                                    <input
-                                        type="number"
-                                        placeholder="e.g., 720 kcal"
-                                        value={overallKcal}
-                                        onChange={(event) => {
-                                            const val = event.target.value;
-                                            if (val === "" || Number(val) >= 0) {
-                                                setOverallKcal(val);
-                                            }
-                                        }}
-                                    />
-                                </div>
-                                <div className="nutrition-field">
-                                    <label>Protein (g)</label>
-                                    <input
-                                        type="number"
-                                        placeholder="e.g., 10 g"
-                                        value={protein}
-                                        onChange={(event) => {
-                                            const val = event.target.value;
-                                            if (val === "" || Number(val) >= 0) {
-                                                setProtein(val);
-                                            }
-                                        }}
-                                    />
-                                </div>
-                                <div className="nutrition-field">
-                                    <label>Fat (g)</label>
-                                    <input
-                                        type="number"
-                                        placeholder="e.g., 10 g"
-                                        value={fat}
-                                        onChange={(event) => {
-                                            const val = event.target.value;
-                                            if (val === "" || Number(val) >= 0) {
-                                                setFat(val);
-                                            }
-                                        }}
-                                    />
-                                </div>
-                                <div className="nutrition-field">
-                                    <label>Carbs (g)</label>
-                                    <input
-                                        type="number"
-                                        placeholder="e.g., 10 g"
-                                        value={carbs}
-                                        onChange={(event) => {
-                                            const val = event.target.value;
-                                            if (val === "" || Number(val) >= 0) {
-                                                setCarbs(val);
-                                            }
-                                        }}
-                                    />
-                                </div>
-                                <div className="nutrition-field">
-                                    <label>Sugar (g)</label>
-                                    <input
-                                        type="number"
-                                        placeholder="e.g., 10 g"
-                                        value={sugar}
-                                        onChange={(event) => {
-                                            const val = event.target.value;
-                                            if (val === "" || Number(val) >= 0) {
-                                                setSugar(val);
-                                            }
-                                        }}
-                                    />
-                                </div>
-                                <div className="nutrition-field">
-                                    <label>Fiber (g)</label>
-                                    <input
-                                        type="number"
-                                        placeholder="e.g., 10 g"
-                                        value={fiber}
-                                        onChange={(event) => {
-                                            const val = event.target.value;
-                                            if (val === "" || Number(val) >= 0) {
-                                                setFiber(val);
-                                            }
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        </CollapsibleForm>
                         <div className="mealplan-footer">
-                            <button className="mealplan-cancel" onClick={onClose}>Cancel</button>
+                            <button className="mealplan-cancel" type="button" onClick={onClose}>Cancel</button>
                             <button className="mealplan-save" disabled={loading}>
                                 {loading ? "Wait..." : (isEditing ? "Save Changes" : "Create")}
                             </button>

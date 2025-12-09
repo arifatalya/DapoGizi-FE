@@ -5,8 +5,8 @@ const axios = require("axios");
 const storage = multer.memoryStorage();
 
 function imageFileFilter(req, file, cb) {
-    const ok = /image\/(jpeg|jpg)/.test(file.mimetype);
-    cb(ok ? null : new Error("Only .jpg images are allowed"), ok);
+    const ok = /image\/(jpeg|jpg|png)/.test(file.mimetype);
+    cb(ok ? null : new Error("Only .jpg and .png images are allowed"), ok);
 }
 
 const kitchenPhotosUpload = multer({

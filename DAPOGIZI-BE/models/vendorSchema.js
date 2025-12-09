@@ -19,8 +19,38 @@ const vendorSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        // address: {
+        //     type: String,
+        // },
         address: {
-            type: String,
+            address_line_1: {
+                type: String,
+                default: "",
+            },
+            address_line_2: {
+                type: String,
+                default: "",
+            },
+            district: {
+                type: String,
+                default: "",
+            },
+            city: {
+                type: String,
+                default: "",
+            },
+            province: {
+                type: String,
+                default: "",
+            },
+            postal_code: {
+                type: String,
+                default: "",
+            },
+            full_address: {
+                type: String,
+                default: "",
+            }
         },
         location: {
             type: {

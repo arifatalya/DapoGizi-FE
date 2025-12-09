@@ -1,7 +1,7 @@
 const API_KEY = process.env.GEOAPIFY_API_KEY;
 
 async function geocodeAddress(address) {
-    if (!address) return null;
+    if (!address || !address.trim()) return null;
     const url = new URL("https://api.geoapify.com/v1/geocode/search");
     url.searchParams.set("text", address);
     url.searchParams.set("limit", "1");
@@ -19,6 +19,7 @@ async function geocodeAddress(address) {
     const lat = feat.geometry.coordinates[1];
     return { lon, lat, formatted: feat.properties.formatted };
 }
+
 
 function toRad(x) { return (x * Math.PI) / 180; }
 function haversine(lat1, lon1, lat2, lon2) {
