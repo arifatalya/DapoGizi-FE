@@ -13,12 +13,6 @@ function MealPlanModal({isOpen, onClose, plan, refreshList, renderToast}) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [photos, setPhotos] = useState([]);
-    // const [overallKcal, setOverallKcal] = useState("");
-    // const [protein, setProtein] = useState("");
-    // const [fat, setFat] = useState("");
-    // const [carbs, setCarbs] = useState("");
-    // const [sugar, setSugar] = useState("");
-    // const [fiber, setFiber] = useState("");
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
     const [submitted, setSubmitted] = useState(false);

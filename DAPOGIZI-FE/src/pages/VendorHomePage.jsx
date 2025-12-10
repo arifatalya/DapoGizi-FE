@@ -49,7 +49,7 @@ function VendorHomePage() {
                         description="Read feedback from nutrition teams and schools, and find improvement notes on your recent submissions."
                     />
                 </div>
-                <Sidebar isMealModalOpen={mealPlanModalOpen} openMealModal={() => setMealPlanModalOpen(true)}/>
+                <Sidebar isMealModalOpen={mealPlanModalOpen} openMealModal={() => setMealPlanModalOpen(true)} />
                 <MealPlanModal isOpen={mealPlanModalOpen} onClose={() => setMealPlanModalOpen(false)} plan={selectedPlan} refreshList={refreshList} renderToast={renderToast} />
             </div>
         </>

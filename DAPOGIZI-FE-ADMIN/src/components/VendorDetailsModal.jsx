@@ -205,7 +205,7 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
         if (typeof address === "string") {
             return address;
         }
-        return address.address_line_1 || address.full_address || address.address_line_2 || `${address.district || ""} ${address.city || ""}`.trim() || "";
+        return address.full_address || address.address_line_2 || `${address.district || ""} ${address.city || ""}`.trim() || "";
     };
 
 
@@ -260,7 +260,7 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
                                         <div className="vendor-info-block">
                                             <p className="vendor-details-label">Address</p>
                                             <p className="vendor-info-value">
-                                                {getAddressDisplay(vendorDetails?.address || vendor.address)}
+                                                {getAddressDisplay(vendor.address)}
                                             </p>
                                         </div>
                                     </div>

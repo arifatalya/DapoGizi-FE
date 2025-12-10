@@ -38,13 +38,6 @@ const SignupStepOperational = forwardRef(({next, prev}, ref) => {
 
     const provinceOptions = Object.keys(cities).map((province) => ({label: province, value: province}));
 
-    // const cityOptions = address.province && cities[address.province]
-    //     ? cities[address.province].map((city) => ({
-    //         label: city,
-    //         value: city,
-    //     }))
-    //     : [];
-
     const cityOptions = useMemo(() =>
     address.province
         ? cities[address.province].map(city => ({label: city, value: city}))

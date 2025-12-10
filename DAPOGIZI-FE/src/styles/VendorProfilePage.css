@@ -1,0 +1,454 @@
+.vpr-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.vpr-header {
+    margin-bottom: 6px;
+}
+
+.vpr-header-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    border-radius: 12px;
+    padding: 14px 24px;
+    background: #ffffff;
+    border: 1px solid #e8eaf0;
+    font-size: 17px;
+    font-weight: 500;
+    color: #2a3552;
+    box-shadow: 0 6px 16px rgba(20, 40, 90, 0.08);
+}
+
+.vpr-header-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 10px;
+    background: #95de80;
+    box-shadow: 0 0 0 3px rgba(79, 195, 66, 0.2);
+}
+
+.vpr-header-label {
+    max-width: 280px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+}
+
+.vpr-section {
+    background: #fdfeff;
+    border-radius: 16px;
+    padding: 20px 32px 28px 32px;
+}
+
+.vpr-section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    margin: 0;
+}
+
+.vpr-section-heading h2, .vpr-section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1f2943;
+    margin-bottom: 12px;
+}
+
+.vpr-section-heading p {
+    font-size: 13px;
+    color: #7b8399;
+    margin: 4px 0 0;
+}
+
+.vpr-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid #c4c5d2;
+    background: #ffffff;
+    font-size: 13px;
+    font-weight: 500;
+    color: #3a4562;
+}
+
+.vpr-chip img {
+    width: 16px;
+    height: 16px;
+}
+
+.vpr-kitchen-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 260px));
+    gap: 12px;
+    justify-content: center;
+    justify-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    padding: 12px 0;
+}
+
+
+.vpr-kitchen-photo {
+    aspect-ratio: 4/3;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #e8eef5;
+    box-shadow: 0 6px 16px rgba(20, 40, 90, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+    width: 100%;
+    height: auto;
+    min-height: 120px;
+}
+
+.vpr-kitchen-photo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(20, 40, 90, 0.15);
+}
+
+.vpr-kitchen-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.vpr-kitchen-empty {
+    font-size: 14px;
+    color: #9aa2b8;
+    padding: 20px 8px;
+    text-align: center;
+    grid-column: 1/-1;
+}
+
+.vpr-kitchen-skeleton-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    padding: 12px 0;
+}
+
+.vpr-kitchen-skeleton {
+    aspect-ratio: 4/3;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #e5e8f3 0%, #f2f4fb 50%, #e5e8f3 100%);
+    background-size: 200px 100%;
+    animation: vpr-shimmer 1.2s infinite;
+}
+
+.vpr-upload-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.vpr-upload-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.vpr-upload-item {
+    display: inline-flex;
+    align-items: center;
+    background-color: #f8f9fb;
+    border: 1px solid #e1e4ef;
+    padding: 6px 8px 6px 12px;
+    border-radius: 20px;
+    gap: 8px;
+}
+
+.vpr-upload-item-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.vpr-file-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: #2a3552;
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vpr-file-size {
+    font-size: 11px;
+    color: #8b93aa;
+}
+
+.vpr-remove-file {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: #e8eaef;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.vpr-remove-file img {
+    width: 12px;
+    height: 12px;
+    opacity: 0.6;
+}
+
+.vpr-remove-file:hover {
+    color: #b52b27;
+}
+
+.vpr-upload-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.vpr-upload-row {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.vpr-upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    width: 180px;
+    background: #ffffff;
+    border: 1px dashed #c8d0e3;
+    font-size: 13px;
+    font-weight: 500;
+    color: #4a5573;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.vpr-upload-btn:hover {
+    border-color: #a8b5d0;
+    background: #fcfcfd;
+}
+
+.vpr-upload-btn input[type="file"] {
+    display: none;
+}
+
+.vpr-upload-btn img {
+    width: 16px;
+    height: 16px;
+}
+
+.vpr-upload-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.vpr-upload-info {
+    font-size: 12px;
+    color: #8c95b0;
+}
+
+.vpr-upload-btn-primary, .vpr-upload-btn-secondary {
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: none;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease-out;
+}
+
+.vpr-upload-btn-primary {
+    background-color: #43a047;
+    color: #ffffff;
+}
+
+.vpr-upload-btn-primary:hover:not(:disabled) {
+    background-color: #235d25;
+}
+
+.vpr-upload-btn-secondary {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.vpr-upload-btn-secondary:hover:not(:disabled) {
+    background: #c8e6c9;
+}
+
+.vpr-upload-btn-primary:disabled, .vpr-upload-btn-secondary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.vpr-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.vpr-form-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 16px 16px 18px;
+    box-shadow: 0 8px 18px rgba(12, 34, 84, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.vpr-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.vpr-field-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2a3552;
+}
+
+.vpr-field-helper {
+    font-size: 12px;
+    color: #9ca4be;
+    margin-top: -2px;
+}
+
+.vpr-input {
+    border-radius: 10px;
+    border: 1px solid #c8e6c9;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #22263f;
+    background: #f8fef8;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.vpr-input:focus {
+    outline: none;
+    border-color: #66bb6a;
+    box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.15);
+}
+
+.vpr-input::placeholder {
+    color: #b5d4b6;
+}
+
+.vpr-field-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 10px;
+}
+
+.vpr-days-grid {
+    margin-top: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.vpr-day-pill {
+    min-width: 42px;
+    padding: 7px 12px;
+    border-radius: 10px;
+    border: 1px solid #c8e6c9;
+    background: #f8fef8;
+    font-size: 13px;
+    font-weight: 500;
+    color: #558b57;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.vpr-day-pill:hover:not(.vpr-day-pill-active) {
+    border-color: #a5d6a7;
+    background: #e8f5e9;
+}
+
+.vpr-day-pill-active {
+    background: #43a047;
+    border-color: #43a047;
+    color: #ffffff;
+}
+
+.vpr-form-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+.vpr-save-btn {
+    position: relative;
+    padding: 11px 24px;
+    border-radius: 10px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(135deg, #66bb6a 0%, #43a047 100%);
+    cursor: pointer;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.vpr-save-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #368639 0%, #206c24 100%);
+    border-radius: 10px;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.4s ease;
+}
+
+.vpr-save-btn:hover:not(:disabled)::before {
+    opacity: 1;
+}
+
+.vpr-save-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.vpr-loading-overlay {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 13px;
+    color: #9ba3c1;
+}
+
+@keyframes vpr-shimmer {
+    0% {
+        background-position: -200px 0;
+    }
+    100% {
+        background-position: 200px 0;
+    }
+}

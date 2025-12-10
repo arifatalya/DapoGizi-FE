@@ -1,0 +1,214 @@
+.mpc-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    padding: 8px 0 20px;
+}
+
+.mpc-empty {
+    text-align: center;
+    padding: 32px 0;
+    color: #9fa5ba;
+    font-size: 14px;
+}
+
+.mpc-card {
+    position: relative;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 12px 26px rgba(29, 43, 102, 0.18);
+    min-height: 120px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.mpc-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 32px rgba(29, 43, 102, 0.22);
+}
+
+.mpc-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.2) 34%, rgba(0, 0, 0, 0.6) 100%);
+}
+
+.mpc-card-overlay {
+    position: relative;
+    z-index: 1;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mpc-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.mpc-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+
+.mpc-name {
+    font-size: 20px;
+    font-weight: 600;
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.45);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.mpc-title-divider {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 700;
+}
+
+.mpc-date {
+    font-size: 18px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+    white-space: nowrap;
+}
+
+.mpc-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(6px);
+    background: rgba(0, 0, 0, 0.55);
+    color: #ffffff;
+}
+
+.mpc-status img {
+    width: 20px;
+    height: 20px;
+}
+
+.status-pending {
+    background: linear-gradient(135deg, #ffd969 0%, #f4b739 100%);
+    color: #5b3b00;
+}
+
+.status-approved {
+    background: linear-gradient(135deg, #79e08f 0%, #26b560 100%);
+    color: #05361c;
+}
+
+.status-rejected {
+    background: linear-gradient(135deg, #ff8aa5 0%, #e03c5c 100%);
+    color: #520019;
+}
+
+.mpc-assessment-pill {
+    margin-top: 10px;
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 80%;
+}
+
+.mpc-assessment-text {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.mpc-assessment-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #7f8697;
+}
+
+.mpc-assessment-score {
+    font-size: 13px;
+    font-weight: 600;
+    color: #29314f;
+}
+
+.mpc-progress {
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    background: #edf0f7;
+    overflow: hidden;
+}
+
+.mpc-progress-bar {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #46d37a 0%, #31b557 50%, #1d8b3e 100%);
+    transition: width 0.35s ease;
+}
+
+.mpc-details-button {
+    margin-top: 10px;
+    align-self: flex-end;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: none;
+    font-size: 13px;
+    font-weight: 500;
+    color: #f7f9ff;
+    background: rgba(15, 29, 70, 0.9);
+    box-shadow: 0 6px 12px rgba(2, 9, 42, 0.4);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.mpc-details-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(2, 9, 42, 0.5);
+}
+
+.mpc-skeleton-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.mpc-skeleton-card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 12px 26px rgba(29, 43, 102, 0.18);
+}
+
+.mpc-skel-bg {
+    height: 120px;
+    background: linear-gradient(90deg, #e9ecf5 0%, #f3f5fb 50%, #e9ecf5 100%);
+    background-size: 200px 100%;
+    animation: mpc-shimmer 1.4s infinite;
+}
+
+@keyframes mpc-shimmer {
+    0% {
+        background-position: -200px 0;
+    }
+    100% {
+        background-position: 200px 0;
+    }
+}
