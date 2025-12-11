@@ -106,15 +106,15 @@ function Sidebar({isMealModalOpen, openMealModal}) {
                             <img src={UserHappy} alt="profile-menu" height={18} width={18}/> Profile
                         </Link>
                     </div>
-                    <div className="menu-wrapper">
-                        <Link to="/feedback" className="sidebar-menu-link" onClick={handleInactive}>
-                            <img src={Feedback} alt="feedbacks" height={18} width={18}/> Feedbacks
-                        </Link>
-                    </div>
+                    {/*<div className="menu-wrapper">*/}
+                    {/*    <Link to="/feedback" className="sidebar-menu-link" onClick={handleInactive}>*/}
+                    {/*        <img src={Feedback} alt="feedbacks" height={18} width={18}/> Feedbacks*/}
+                    {/*    </Link>*/}
+                    {/*</div>*/}
                 </div>
                 <div className="sidebar-footer">
                     <div className="footer-item-wrapper">
-                        <Link to="/settings" className="sidebar-settings" onClick={handleInactive}>
+                        <Link to="/Profile" className="sidebar-settings" onClick={handleInactive}>
                             <img src={Settings} alt="settings" height={18} width={18}/> Settings
                         </Link>
                     </div>

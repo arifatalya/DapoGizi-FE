@@ -15,7 +15,7 @@ function HomeNavbar({vendorName}) {
                         <Link className="navbar-buttons" to="/profile">
                             <img src={UserProfile} alt="user profile" height={18} width={18} />
                         </Link>
-                        <Link className="navbar-buttons" to="/settings">
+                        <Link className="navbar-buttons" to="/monitor">
                             <img src={Settings}  alt="settings" height={18} width={18} />
                         </Link>
                     </div>
