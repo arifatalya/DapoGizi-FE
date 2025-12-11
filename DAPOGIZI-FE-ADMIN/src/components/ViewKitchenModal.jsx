@@ -5,7 +5,7 @@ import '../styles/ViewKitchenModal.css'
 import Close from '../assets/x.svg'
 import NoPhotos from '../assets/camera-slash.svg'
 
-function ViewKitchenModal({isOpen, onClose, vendorId, photos, onSubmitted}) {
+function ViewKitchenModal({isOpen, onClose, vendorId, photos, onSubmitted, renderToast}) {
     const server = `${import.meta.env.VITE_API_URL}`;
     const modalRoot = document.getElementById("modal-root") || document.body;
     const [score, setScore] = useState(0);
@@ -34,6 +34,8 @@ function ViewKitchenModal({isOpen, onClose, vendorId, photos, onSubmitted}) {
             onClose();
             return;
         }
+        renderToast("You have unsaved changes!", "info");
+        onClose();
     }
 
     const submitAssessment = async () => {

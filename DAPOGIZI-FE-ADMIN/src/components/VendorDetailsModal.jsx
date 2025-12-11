@@ -9,8 +9,9 @@ import Placeholder from '../assets/image-placeholder.svg'
 import Info from '../assets/info.svg'
 import ViewKitchenModal from '../components/ViewKitchenModal.jsx'
 import ViewKitchenPhotosOnlyModal from './ViewKitchenPhotosOnlyModal.jsx'
+import ToastProvider from './ToastProvider.jsx'
 
-function VendorDetailsModal({vendor, isOpen, onClose}) {
+function VendorDetailsModal({vendor, isOpen, onClose, renderToast}) {
     const server = `${import.meta.env.VITE_API_URL}`;
     const modalRoot = document.getElementById("modal-root") || document.body;
     const [vendorDetails, setVendorDetails] = useState(null);
@@ -65,6 +66,7 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
 
             } catch (err) {
                 console.log("Failed to load vendor details:", err);
+                renderToast("Unable to load vendor details.", "error");
 
                 if (!canceled) {
                     setMessage("Something went wrong while retrieving vendor details. Please try again later.");
@@ -491,7 +493,7 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
                     </div>
                 </div>
             </div>
-            <ViewKitchenModal isOpen={kitchenModalOpen} onClose={closeKitchenModal} vendorId={vendorDetails?._id || vendor?.id} photos={selectedKitchenPhotos}
+            <ViewKitchenModal isOpen={kitchenModalOpen} onClose={closeKitchenModal} renderToast={renderToast} vendorId={vendorDetails?._id || vendor?.id} photos={selectedKitchenPhotos}
                               onSubmitted={(newCheck) => {
                                   setKitchenChecks(prev => [newCheck, ...prev]);
                               }}
