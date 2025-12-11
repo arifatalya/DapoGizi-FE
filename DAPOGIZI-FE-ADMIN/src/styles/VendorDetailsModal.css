@@ -429,8 +429,13 @@
     margin: 0;
     font-size: 13px;
     color: #64748b;
-    max-width: 240px;
-    line-height: 1.5;
+    max-width: 280px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .kitchen-status-table tbody tr, .meal-plans-table tbody tr {
