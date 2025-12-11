@@ -18,10 +18,13 @@ app.use(cors({
         'http://localhost:5173',
         'http://localhost:5174',
         'http://localhost:5175',
-        'https://dapogizi.up.railway.app'
+        'https://dapogizi.up.railway.app',
+        'https://dapogizi-fe-admin.vercel.app',
+        'https://dapogizi-fe.vercel.app'
     ],
     credentials: true
 }));
+
 
 //sybau
 // Load .env
