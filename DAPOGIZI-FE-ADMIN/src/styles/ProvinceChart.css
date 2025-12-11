@@ -1,0 +1,120 @@
+/* ProvinceChart.css */
+.province-chart-container {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    height: fit-content;
+}
+
+.province-chart-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0 0 16px 0;
+}
+
+.province-chart-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.province-pie-wrapper {
+    flex-shrink: 0;
+}
+
+.province-pie {
+    width: 120px;
+    height: 120px;
+}
+
+.pie-segment {
+    transition: transform 0.2s ease, filter 0.2s ease;
+    transform-origin: 60px 60px;
+    cursor: pointer;
+}
+
+.pie-segment:hover,
+.pie-segment.hovered {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+.pie-center-number {
+    font-size: 18px;
+    font-weight: 700;
+    fill: #1a1a1a;
+}
+
+.pie-center-label {
+    font-size: 8px;
+    font-weight: 500;
+    fill: #6b7280;
+}
+
+.province-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px;
+    border-radius: 6px;
+    transition: background 0.15s ease;
+    cursor: pointer;
+}
+
+.legend-item:hover,
+.legend-item.hovered {
+    background: #f3f4f6;
+}
+
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.legend-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: #374151;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.legend-count {
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.legend-more {
+    font-size: 11px;
+    color: #6b7280;
+    padding: 4px 8px;
+    font-style: italic;
+}
+
+.province-chart-skeleton {
+    height: 120px;
+    background: linear-gradient(90deg, #eee 25%, #f5f5f5 37%, #eee 63%);
+    background-size: 400% 100%;
+    border-radius: 8px;
+    animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}

@@ -101,11 +101,9 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
         const percentage = score*100;
         let scoreBadge = "score-badge ";
 
-        if (status === "dirty" || percentage < 60) {
+        if (status === "dirty" && percentage < 70) {
             scoreBadge += "score-red";
-        } else if (percentage < 80) {
-            scoreBadge += "score-yellow";
-        } else {
+        }  else {
             scoreBadge += "score-green";
         }
 
@@ -187,6 +185,43 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
     const alreadyAssessed = kitchenChecks.some(check =>
         JSON.stringify(check.kitchen_photos) === JSON.stringify(vendorDetails?.kitchen_photos)
     );
+
+    const calculateKitchenStats = () => {
+        if (kitchenChecks.length === 0) return null;
+
+        const scores = kitchenChecks.map(c => c.score * 100);
+        const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+        const latest = scores[0];
+        const trend = scores.length > 1 ? latest - scores[1] : 0;
+        const cleanCount = kitchenChecks.filter(c => c.status === 'clean').length;
+
+        return {
+            average: avg.toFixed(1),
+            latest: latest.toFixed(1),
+            trend: trend.toFixed(1),
+            total: kitchenChecks.length,
+            cleanRate: ((cleanCount / kitchenChecks.length) * 100).toFixed(0),
+            scores: scores.slice(0, 6).reverse()
+        };
+    };
+
+    const kitchenStats = calculateKitchenStats();
+
+    const MiniScoreChart = ({ scores }) => {
+        const maxScore = 100;
+        return (
+            <div className="mini-score-chart">
+                {scores.map((score, i) => (
+                    <div key={i} className="chart-bar-wrapper">
+                        <div
+                            className={`chart-bar ${score >= 75 ? 'bar-green' : score >= 60 ? 'bar-yellow' : 'bar-red'}`}
+                            style={{ height: `${(score / maxScore) * 100}%` }}
+                        />
+                    </div>
+                ))}
+            </div>
+        );
+    };
 
     const openPhotoOnlyModal = (photos) => {
         setPhotoModalImages(Array.isArray(photos) ? photos : []);
@@ -272,16 +307,48 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
                                             {alreadyAssessed ? "Kitchen Approved" : "Evaluate Current State"}
                                         </button>
                                     </div>
-                                    {selectedMealPlans.length > 1 && (
-                                        <div className="details-action-bar">
-                                            <span>{selectedMealPlans.length} selected</span>
-                                            <div className="bulk-buttons">
-                                                <button className="bulk-reject" onClick={() => handleRejectMealPlan(selectedMealPlans)}>
-                                                    Reject
-                                                </button>
-                                                <button className="bulk-approve" onClick={() => handleApproveMealPlan(selectedMealPlans)}>
-                                                    Approve
-                                                </button>
+                                    {kitchenStats && (
+                                        <div className="kitchen-overview-card">
+                                            <div className="kitchen-score-circle">
+                                                <div className="score-circle-wrapper">
+                                                    <svg viewBox="0 0 100 100">
+                                                        <circle cx="50" cy="50" r="45" className="score-circle-bg" />
+                                                        <circle
+                                                            cx="50" cy="50" r="45"
+                                                            className={`score-circle-progress ${parseFloat(kitchenStats.average) >= 75 ? 'progress-green' : parseFloat(kitchenStats.average) >= 60 ? 'progress-yellow' : 'progress-red'}`}
+                                                            strokeDasharray={`${(parseFloat(kitchenStats.average) / 100) * 283} 283`}
+                                                        />
+                                                    </svg>
+                                                    <div className="score-circle-text">
+                                                        <span className="score-circle-number">{kitchenStats.average}</span>
+                                                        <span className="score-circle-percent">%</span>
+                                                    </div>
+                                                </div>
+                                                <p className="score-circle-label">Average Score</p>
+                                            </div>
+                                            <div className="kitchen-stats-grid">
+                                                <div className="kitchen-stat-item">
+                                                    <span className="kitchen-stat-value">{kitchenStats.latest}%</span>
+                                                    <span className="kitchen-stat-label">Latest Score</span>
+                                                </div>
+                                                <div className="kitchen-stat-item">
+                                                    <span className={`kitchen-stat-value ${parseFloat(kitchenStats.trend) >= 0 ? 'trend-up' : 'trend-down'}`}>
+                                                        {parseFloat(kitchenStats.trend) >= 0 ? '↑' : '↓'} {Math.abs(parseFloat(kitchenStats.trend))}%
+                                                    </span>
+                                                    <span className="kitchen-stat-label">vs Previous</span>
+                                                </div>
+                                                <div className="kitchen-stat-item">
+                                                    <span className="kitchen-stat-value">{kitchenStats.cleanRate}%</span>
+                                                    <span className="kitchen-stat-label">Clean Rate</span>
+                                                </div>
+                                                <div className="kitchen-stat-item">
+                                                    <span className="kitchen-stat-value">{kitchenStats.total}</span>
+                                                    <span className="kitchen-stat-label">Total Checks</span>
+                                                </div>
+                                            </div>
+                                            <div className="kitchen-chart-section">
+                                                <span className="kitchen-chart-label">Score History</span>
+                                                <MiniScoreChart scores={kitchenStats.scores} />
                                             </div>
                                         </div>
                                     )}
@@ -327,6 +394,19 @@ function VendorDetailsModal({vendor, isOpen, onClose}) {
                                 </div>
                                     <div className="vendor-section">
                                         <h2 className="vendor-section-label">Meal Plans Status</h2>
+                                        {selectedMealPlans.length > 1 && (
+                                            <div className="details-action-bar">
+                                                <span>{selectedMealPlans.length} selected</span>
+                                                <div className="bulk-buttons">
+                                                    <button className="bulk-reject" onClick={() => handleRejectMealPlan(selectedMealPlans)}>
+                                                        Reject
+                                                    </button>
+                                                    <button className="bulk-approve" onClick={() => handleApproveMealPlan(selectedMealPlans)}>
+                                                        Approve
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
                                         <div className="vendor-details-wrapper">
                                             <table className="meal-plans-table">
                                                 <thead>

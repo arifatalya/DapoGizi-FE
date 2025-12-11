@@ -22,12 +22,15 @@ function ActivityTimeline() {
             return "just now";
         }
         if (diff < 3600) {
-            return `${Math.floor(diff / 60)} minutes ago`;
+            const minutes = Math.floor(diff / 60);
+            return `${minutes} ${minutes === 1 ? "minute" : "minutes"} ago`;
         }
         if (diff < 86400) {
-            return `${Math.floor(diff / 3600)} hours ago`;
+            const hours = Math.floor(diff / 3600);
+            return `${hours} ${hours === 1 ? "hour" : "hours"} ago`;
         }
-        return `${Math.floor(diff / 86400)} days ago`;
+        const days = Math.floor(diff / 86400);
+        return `${days} ${days === 1 ? "day" : "days"} ago`;
     };
 
     useEffect(() => {
@@ -57,15 +60,17 @@ function ActivityTimeline() {
                         type: "vendor",
                         title: "New Vendor Registered",
                         detail: profile.vendor_details.vendor_name,
-                        timestamp: profile.vendor_details.created_at,
+                        timestamp: profile.vendor_details.createdAt || profile.vendor_details.created_at,
                     });
 
                     for (const mealplan of profile.meal_plans) {
+                        console.log("Mealplan full object:", mealplan);
+                        console.log("Available keys:", Object.keys(mealplan));
                         allEvents.push({
                             type: "meal-submitted",
                             title: "Meal Plan Submitted",
                             detail: mealplan.name,
-                            timestamp: mealplan.created_at,
+                            timestamp: mealplan.createdAt || mealplan.created_at,
                         });
 
                         if (mealplan.status === "approved") {
@@ -73,7 +78,7 @@ function ActivityTimeline() {
                                 type: "meal-approved",
                                 title: "Meal Plan Approved",
                                 detail: mealplan.name,
-                                timestamp: mealplan.approved_at,
+                                timestamp: mealplan.approved_at || mealplan.approvedAt,
                             });
                         }
 
@@ -82,7 +87,7 @@ function ActivityTimeline() {
                                 type: "meal-rejected",
                                 title: "Meal Plan Rejected",
                                 detail: mealplan.name,
-                                timestamp: mealplan.approved_at,
+                                timestamp: mealplan.approved_at || mealplan.approvedAt,
                             });
                         }
                     }
@@ -91,14 +96,23 @@ function ActivityTimeline() {
                         allEvents.push({
                             type: "kitchen-check",
                             title: "Kitchen Check Completed",
-                            detail: `Score: ${(check.score*100).toFixed(1)}%`,
-                            timestamp: check.check_date,
+                            detail: `Score: ${(check.score * 100).toFixed(1)}%`,
+                            timestamp: check.check_date || check.checkDate || check.createdAt,
                         });
                     }
                 }
-                allEvents.sort(
-                    (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
-                );
+                allEvents.sort((a, b) => {
+                    const dateA = a.timestamp ? new Date(a.timestamp) : new Date(0);
+                    const dateB = b.timestamp ? new Date(b.timestamp) : new Date(0);
+                    if (isNaN(dateA.getTime())) {
+                        return 1;
+                    }
+                    if (isNaN(dateB.getTime())) {
+                        return -1;
+                    }
+
+                    return dateB - dateA;
+                });
 
                 if (!cancel) {
                     setEvents(allEvents);

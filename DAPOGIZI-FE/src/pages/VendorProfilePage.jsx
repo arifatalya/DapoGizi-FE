@@ -35,6 +35,8 @@ function VendorProfilePage() {
     const [toastMessage, setToastMessage] = useState("");
     const [toastType, setToastType] = useState("default");
     const [mealPlanModalOpen, setMealPlanModalOpen] = useState(false);
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+    const maxFileSize = 3*1024*1024;
     const selectedPlan = null;
     const refreshList = () => {};
 
@@ -97,31 +99,6 @@ function VendorProfilePage() {
 
         fetchProfile();
     }, [server]);
-
-    // useEffect(() => {
-    //     const fetchKitchenChecks = async () => {
-    //         setLoadingPhotos(true);
-    //         try {
-    //             const token = localStorage.getItem("token");
-    //             const response = await axios.get(`${server}/vendor/my-kitchen-checks`, {
-    //                 headers: {Authorization: `Bearer ${token}`},
-    //             });
-    //             if (response.data?.success && Array.isArray(response.data.data)) {
-    //                 const urls = new Set(kitchenPhotos);
-    //                 response.data.data.forEach((check) => {
-    //                     (check.kitchen_photos || []).forEach((url) => urls.add(url));
-    //                 });
-    //                 setKitchenPhotos(Array.from(urls));
-    //             }
-    //         } catch (err) {
-    //             console.error("Failed to load kitchen checks:", err);
-    //         } finally {
-    //             setLoadingPhotos(false);
-    //         }
-    //     };
-    //
-    //     fetchKitchenChecks();
-    // }, [server]);
 
     const provinceOptions = useMemo(() => Object.keys(cities).map((province) => ({
                 label: province,
@@ -192,12 +169,38 @@ function VendorProfilePage() {
     };
 
     const handleFileChange = (event) => {
-        const files = Array.from(event.target.files || []);
-        if (!files.length) {
-            return;
+        const selected = Array.from(event.target.files || []);
+        if (!selected.length) return;
+
+        const validFiles = [];
+        let hasInvalidType = false;
+        let hasInvalidSize = false;
+
+        selected.forEach(file => {
+            const isValidType = allowedTypes.includes(file.type);
+            const isValidSize = file.size <= maxFileSize;
+
+            if (isValidType && isValidSize) {
+                validFiles.push(file);
+            } else {
+                if (!isValidType) hasInvalidType = true;
+                if (!isValidSize) hasInvalidSize = true;
+            }
+        });
+
+        if (hasInvalidType) {
+            renderToast("Only .jpeg, .jpg, or .png images are allowed", "error");
         }
 
-        setSelectedFiles(prev => [...prev, ...files]);
+        if (hasInvalidSize) {
+            renderToast("Each image must be under 3 MB", "error");
+        }
+
+        if (validFiles.length > 0) {
+            setSelectedFiles(prev => [...prev, ...validFiles]);
+        }
+
+        event.target.value = "";
     };
 
     const removeSelectedFile = (index) => {

@@ -4,6 +4,7 @@ import VendorsTable from '../components/VendorsTable'
 import VendorDetailsModal from '../components/VendorDetailsModal.jsx'
 import VendorsOverviewCards from '../components/VendorsOverviewCards.jsx'
 import ActivityTimeline from '../components/ActivityTimeline.jsx'
+import ProvinceChart from '../components/ProvinceChart.jsx'
 
 function AdminDashboardPage() {
     const [selectedVendor, setSelectedVendor] = useState(null);
@@ -25,6 +26,7 @@ function AdminDashboardPage() {
             <div className="dashboard-grid">
                 <div className="dashboard-left">
                     <ActivityTimeline />
+                    <ProvinceChart />
                 </div>
                 <div className="dashboard-right">
                     <VendorsTable onOpenVendorModal={handleOpenVendorDetails} />

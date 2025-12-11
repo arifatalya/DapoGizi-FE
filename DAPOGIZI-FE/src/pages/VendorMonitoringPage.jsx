@@ -4,6 +4,7 @@ import MealPlansCard from '../components/MealPlansCard.jsx'
 import ToastProvider from '../components/ToastProvider.jsx'
 import Sidebar from '../components/Sidebar.jsx'
 import MealPlanModal from '../components/MealPlanModal.jsx'
+import MealPlanDetailsModal from '../components/MealPlanDetailsModal.jsx'
 import '../styles/VendorMonitoringPage.css'
 import CalendarIcon from '../assets/calendar.svg'
 import ArrowLeft from '../assets/chevron-back.svg'
@@ -20,6 +21,8 @@ function VendorMonitoringPage() {
     const [toastMessage, setToastMessage] = useState("");
     const [toastType, setToastType] = useState("default");
     const [mealPlanModalOpen, setMealPlanModalOpen] = useState(false);
+    const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+    const [selectedMeal, setSelectedMeal] = useState(null);
     const selectedPlan = null;
     const refreshList = () => {};
 
@@ -188,7 +191,10 @@ function VendorMonitoringPage() {
                     {currentMonthLabel && (
                         <div className="vmp-section-title">{currentMonthLabel}</div>
                     )}
-                    <MealPlansCard dataOverride={filteredData} loadingOverride={loading}/>
+                    <MealPlansCard dataOverride={filteredData} loadingOverride={loading} onSeeDetails={(item) => {
+                        setSelectedMeal(item);
+                        setDetailsModalOpen(true);
+                    }}/>
                     {!loading && filteredData.length === 0 && (
                         <div className="vmp-empty-month">
                             No submissions for this selection yet.
@@ -203,6 +209,7 @@ function VendorMonitoringPage() {
             </div>
             <Sidebar isMealModalOpen={mealPlanModalOpen} openMealModal={() => setMealPlanModalOpen(true)} />
             <MealPlanModal isOpen={mealPlanModalOpen} onClose={() => setMealPlanModalOpen(false)} plan={selectedPlan} refreshList={refreshList} renderToast={renderToast} />
+            <MealPlanDetailsModal isOpen={detailsModalOpen} meal={selectedMeal} onClose={() => setDetailsModalOpen(false)}/>
         </>
     );
 }

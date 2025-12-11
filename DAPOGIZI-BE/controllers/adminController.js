@@ -164,7 +164,8 @@ const getFullVendorProfile = async (req, res) => {
         image_url: meal.image_url,
         status: meal.status,
         approved_by: meal.approved_by?.email || null,
-        created_at: meal.createdAt
+        created_at: meal.createdAt,
+        approved_at: meal.approved_at || null
       }))
     };
 

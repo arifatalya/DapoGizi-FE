@@ -134,7 +134,7 @@ function VendorsTable({onOpenVendorModal}) {
             <div className="vendors-table-wrapper">
                 {loading ? (
                     <div className="vendors-table-skeleton">
-                        {Array.from({ length: 5 }).map((_, index) => (
+                        {Array.from({length: 5}).map((_, index) => (
                             <div key={index} className="vendors-table-skeleton-row"></div>
                         ))}
                     </div>
@@ -148,7 +148,7 @@ function VendorsTable({onOpenVendorModal}) {
                             <th>Province</th>
                             <th>Vendor Name</th>
                             <th>Email</th>
-                            <th>Address</th>
+                            {/*<th>Address</th>*/}
                             <th>Actions</th>
                         </tr>
                         </thead>
@@ -163,7 +163,7 @@ function VendorsTable({onOpenVendorModal}) {
                                 </td>
                                 <td>{vendor.vendor_name}</td>
                                 <td>{vendor.email}</td>
-                                <td>{getAddressDisplay(vendor.address)}</td>
+                                {/*<td>{getAddressDisplay(vendor.address)}</td>*/}
                                 <td>
                                     <button className="view-vendor-button" onClick={(event) => {event.stopPropagation();onOpenVendorModal(vendor);}}>
                                         View

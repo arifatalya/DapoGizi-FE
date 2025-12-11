@@ -1,8 +1,17 @@
 .vendors-table-global-wrapper {
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 16px;
+    width: 100%;
+}
+
+.vendors-table-wrapper {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 16px;
+    overflow-x: auto;
+    border: 1px solid #e5e7eb;
+    max-height: none;
 }
 
 .vendors-table-header h2 {
@@ -109,14 +118,6 @@
     outline: none;
 }
 
-.vendors-table-wrapper {
-    background-color: #ffffff;
-    border-radius: 12px;
-    padding: 24px;
-    overflow-x: auto;
-    border: 1px solid #e5e7eb;
-}
-
 .vendors-table {
     width: 100%;
     border-collapse: collapse;
@@ -175,39 +176,179 @@
     min-width: fit-content;
 }
 
-.province-dkijakarta {
-    background-color: #dcfce7;
-    color: #166534;
-}
-
-.province-jawabarat {
-    background-color: #dbeafe;
-    color: #1e40af;
-}
-
-.province-jawatengah {
-    background-color: #e0f2fe;
-    color: #075985;
-}
-
-.province-jawatimur {
+.province-aceh {
     background-color: #fee2e2;
     color: #991b1b;
 }
 
-.province-banten {
-    background-color: #fed7aa;
+.province-sumaterautara {
+    background-color: #ffedd5;
+    color: #9a3412;
+}
+
+.province-sumaterabarat {
+    background-color: #fef3c7;
     color: #92400e;
 }
 
-.province-bali {
+.province-riau {
+    background-color: #fef9c3;
+    color: #854d0e;
+}
+
+.province-jambi {
+    background-color: #ecfccb;
+    color: #3f6212;
+}
+
+.province-sumateraselatan {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.province-bengkulu {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.province-lampung {
+    background-color: #ccfbf1;
+    color: #115e59;
+}
+
+.province-bangkabelitung {
+    background-color: #cffafe;
+    color: #155e75;
+}
+
+.province-kepulauanriau {
+    background-color: #e0f2fe;
+    color: #075985;
+}
+
+.province-dkijakarta {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.province-jawabarat {
+    background-color: #e0e7ff;
+    color: #3730a3;
+}
+
+.province-jawatengah {
+    background-color: #ede9fe;
+    color: #5b21b6;
+}
+
+.province-daerahistimewayogyakarta {
+    background-color: #f3e8ff;
+    color: #6b21a8;
+}
+
+.province-jawatimur {
+    background-color: #fae8ff;
+    color: #86198f;
+}
+
+.province-banten {
     background-color: #fce7f3;
+    color: #9d174d;
+}
+
+.province-bali {
+    background-color: #ffe4e6;
     color: #9f1239;
 }
 
+.province-nusatenggarabarat {
+    background-color: #fecdd3;
+    color: #be123c;
+}
+
+.province-nusatenggaratimur {
+    background-color: #ffd7d9;
+    color: #c2282d;
+}
+
+.province-kalimantanbarat {
+    background-color: #d9f99d;
+    color: #4d7c0f;
+}
+
+.province-kalimantantengah {
+    background-color: #bbf7d0;
+    color: #15803d;
+}
+
+.province-kalimantanselatan {
+    background-color: #a7f3d0;
+    color: #047857;
+}
+
+.province-kalimantantimur {
+    background-color: #99f6e4;
+    color: #0f766e;
+}
+
+.province-kalimantanutara {
+    background-color: #a5f3fc;
+    color: #0e7490;
+}
+
+.province-sulawesiutara {
+    background-color: #bae6fd;
+    color: #0369a1;
+}
+
+.province-sulawesitengah {
+    background-color: #bfdbfe;
+    color: #1d4ed8;
+}
+
+.province-sulawesiselatan {
+    background-color: #c7d2fe;
+    color: #4338ca;
+}
+
+.province-sulawesitenggara {
+    background-color: #ddd6fe;
+    color: #6d28d9;
+}
+
+.province-gorontalo {
+    background-color: #e9d5ff;
+    color: #7e22ce;
+}
+
+.province-sulawesibarat {
+    background-color: #f5d0fe;
+    color: #a21caf;
+}
+
+.province-maluku {
+    background-color: #fbcfe8;
+    color: #be185d;
+}
+
+.province-malukuutara {
+    background-color: #fed7aa;
+    color: #c2410c;
+}
+
+.province-papua {
+    background-color: #fef08a;
+    color: #a16207;
+}
+
+.province-papuabarat {
+    background-color: #e5e5e5;
+    color: #525252;
+}
+
 .province-unknown {
-    background-color: #4d4d5e;
-    color: #f5f5f7;
+    background-color: #f3f4f6;
+    color: #4b5563;
 }
 
 .vendors-empty {

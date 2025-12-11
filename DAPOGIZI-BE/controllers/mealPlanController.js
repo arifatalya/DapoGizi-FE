@@ -3,6 +3,7 @@ const MealPlan = require("../models/mealPlanSchema");
 const MealDetail = require("../models/mealDetailSchema");
 const {uploadToSupabase} = require("../utils/supabaseUpload");
 const {getFoodPredictionAndNutrition} = require("../services/mealAIService");
+const {analyze4Sehat5Sempurna} = require("../utils/foodClassifier");
 
 async function ensureVendor(req) {
   const userId = req.user._id;
@@ -38,7 +39,22 @@ const createMealPlan = async (req, res) => {
     // Get prediction and nutrition details from the image URL
     const nutritionData = await getFoodPredictionAndNutrition(plan.image_url);
 
-    // Save nutrition data into the meal details
+    const classificationResult = analyze4Sehat5Sempurna(
+        nutritionData.predictions,
+        nutritionData.confidence
+    );
+
+    plan.detected_foods = classificationResult.detected_foods;
+    plan.classification_4sehat5sempurna = {
+      status: classificationResult.status,
+      categories_fulfilled: classificationResult.categories_fulfilled,
+      categories_missing: classificationResult.categories_missing,
+      total_categories: classificationResult.total_categories,
+      unrecognized_foods: classificationResult.unrecognized_foods,
+      analysis_date: classificationResult.analysis_date
+    };
+    await plan.save();
+
     const mealDetail = new MealDetail({
       meal_id: plan._id,
       overall_calories: nutritionData.nutrition[0]["Calories (kcal)"],
@@ -55,6 +71,7 @@ const createMealPlan = async (req, res) => {
       message: "MealPlan created",
       mealPlan: plan,
       nutrition: nutritionData.nutrition,
+      classification: classificationResult,
     });
   } catch (err) {
     console.error("createMealPlan error:", err);

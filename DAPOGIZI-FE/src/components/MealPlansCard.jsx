@@ -1,11 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
+import {useState, useEffect, useMemo} from 'react';
 import axios from 'axios';
 import '../styles/MealPlansCard.css';
 import PendingIcon from '../assets/pending.svg';
 import ApprovedIcon from '../assets/approve.svg';
 import RejectedIcon from '../assets/no.svg';
 
-function MealPlansCard({ dataOverride, loadingOverride }) {
+function MealPlansCard({dataOverride, loadingOverride, onSeeDetails}) {
     const server = `${import.meta.env.VITE_API_URL}`;
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ function MealPlansCard({ dataOverride, loadingOverride }) {
             try {
                 const token = localStorage.getItem("token");
                 const response = await axios.get(`${server}/vendor/submissions`, {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: {Authorization: `Bearer ${token}`},
                 });
                 if (response.data?.success) {
                     setData(response.data.data);
@@ -139,7 +139,7 @@ function MealPlansCard({ dataOverride, loadingOverride }) {
                                     />
                                 </div>
                             </div>
-                            <button className="mpc-details-button">
+                            <button className="mpc-details-button" onClick={() => onSeeDetails?.(item)}>
                                 See Details
                             </button>
                         </div>
