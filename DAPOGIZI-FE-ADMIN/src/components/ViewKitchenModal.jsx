@@ -34,9 +34,6 @@ function ViewKitchenModal({isOpen, onClose, vendorId, photos, onSubmitted}) {
             onClose();
             return;
         }
-        if (window.confirm("You have unsaved changes.")) {
-            onClose();
-        }
     }
 
     const submitAssessment = async () => {
